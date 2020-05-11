@@ -10,12 +10,28 @@
 
 // You may add data members and other member functions to this class.
 
+#include <iostream>
+#include <vector>
+#include <string>
+
+class Player;
+class Dungeon;
+#include "utilities.h"
+
+using namespace std;
+
 class Game
 {
 public:
     Game(int goblinSmellDistance);
     void play();
+    
+    // accessors
+    Dungeon* dungeon();
+    Player* player();
 private:
+    Dungeon* m_dungeon;
+    Player* m_player;
 };
 
 #endif // GAME_INCLUDED
