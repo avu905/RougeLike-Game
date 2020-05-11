@@ -11,8 +11,10 @@
 // ===================================================
 // ============== ACTOR IMPLEMENTATION ===============
 // ===================================================
-Actor::Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime)
-{}
+Actor::Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game)
+{
+    m_game = game;
+}
 
 Actor::~Actor()      // Actor Destructor
 {}
@@ -38,7 +40,7 @@ Game* Actor::game()
 // ============== PLAYER IMPLEMENTATION ==============
 // ===================================================
 Player::Player(Game* game)
-: Actor(randInt(0, 17), randInt(0, 69), 20, "short sword", 2, 2, 2, 0)
+: Actor(randInt(0, 17), randInt(0, 69), 20, "short sword", 2, 2, 2, 0, game)
 {}
 
 Player::~Player()
@@ -51,7 +53,10 @@ bool Player::attemptMove()
         return false;
     if (game()->dungeon()->level()->arr_char(getRowNum(), getColNum()+1) == '#')
         return false;
-    
+    if (game()->dungeon()->level()->arr_char(getRowNum()+1, getColNum()) == '#')
+        return false;
+    if (game()->dungeon()->level()->arr_char(getRowNum()-1, getColNum()) == '#')
+        return false;
     return true;
 }
 

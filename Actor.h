@@ -25,7 +25,7 @@ using namespace std;
 class Actor
 {
 public:
-    Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime);
+    Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game);
     virtual ~Actor();
     
     

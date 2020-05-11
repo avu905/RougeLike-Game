@@ -41,16 +41,16 @@ void Game::play()
     cout << "Press q to exit game." << endl;
     char c;
     while ((c = getCharacter()) != 'q') {
-        if (c == 'h' && m_player->attemptMove() == true) {        // move left
+        if (c == 'h' && m_player->attemptMove() == true) {             // move left
             m_player->move(m_player->getRowNum(), m_player->getColNum()-1);
         }
         if (c == 'l' && m_player->attemptMove() == true) {        // move right
             m_player->move(m_player->getRowNum(), m_player->getColNum()+1);
         }
-        if (c == 'k') {          // move up
+        if (c == 'k' && m_player->attemptMove() == true) {        // move up
             m_player->move(m_player->getRowNum()-1, m_player->getColNum());
         }
-        if (c == 'j') {          // move down
+        if (c == 'j' && m_player->attemptMove() == true) {        // move down
             m_player->move(m_player->getRowNum()+1, m_player->getColNum());
         }
 //        if (getCharacter() == 'g')      // pick up object
@@ -67,6 +67,7 @@ void Game::play()
 //            {}
         clearScreen();
         m_dungeon->display();
+        //m_player->attemptMove() = true;
         // TO DO - call diff functions that cout "dragon attacks and hits" etc.
     };
 }
