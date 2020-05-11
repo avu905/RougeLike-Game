@@ -29,7 +29,7 @@ public:
     virtual ~Actor();
     
     
-    virtual bool attemptMove() = 0;
+    virtual bool attemptMove(char c) = 0;
     void move(int row, int col);
     
     // accessors
@@ -57,7 +57,7 @@ class Player : public Actor
 public:
     Player(Game* game);
     ~Player();
-    virtual bool attemptMove();
+    virtual bool attemptMove(char c);
 private:
     // inventory
 };

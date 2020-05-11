@@ -46,16 +46,16 @@ Player::Player(Game* game)
 Player::~Player()
 {}
 
-bool Player::attemptMove()
+bool Player::attemptMove(char c)
 {
     // can't move in that direction
-    if (game()->dungeon()->level()->arr_char(getRowNum(), getColNum()-1) == '#')
+    if (c == 'h' && game()->dungeon()->level()->arr_char(getRowNum(), getColNum()-1) == '#')
         return false;
-    if (game()->dungeon()->level()->arr_char(getRowNum(), getColNum()+1) == '#')
+    if (c == 'l' && game()->dungeon()->level()->arr_char(getRowNum(), getColNum()+1) == '#')
         return false;
-    if (game()->dungeon()->level()->arr_char(getRowNum()+1, getColNum()) == '#')
+    if (c == 'j' && game()->dungeon()->level()->arr_char(getRowNum()+1, getColNum()) == '#')
         return false;
-    if (game()->dungeon()->level()->arr_char(getRowNum()-1, getColNum()) == '#')
+    if (c == 'k' && game()->dungeon()->level()->arr_char(getRowNum()-1, getColNum()) == '#')
         return false;
     return true;
 }
