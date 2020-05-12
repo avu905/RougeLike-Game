@@ -10,11 +10,39 @@
 
 
 // ========== InteractableObject Implementation ==========
-InteractableObject::InteractableObject()
-{}
+InteractableObject::InteractableObject(int row, int col)
+{
+    m_row = row;
+    m_col = col;
+}
 
 InteractableObject::~InteractableObject()
 {}
 
+void InteractableObject::move(int row, int col)
+{
+    m_row = row;
+    m_col = col;
+}
 
+int InteractableObject::getRow()
+    {return m_row;}
 
+int InteractableObject::getCol()
+    {return m_col;}
+
+// ========== Staircase Implementation ==========
+Staircase::Staircase()
+: InteractableObject(randInt(0, 17), randInt(0, 69))
+{}
+
+Staircase::~Staircase()
+{}
+
+// ========== Idol Implementation ==========
+Idol::Idol()
+: InteractableObject(randInt(0, 17), randInt(0, 69))
+{}
+
+Idol::~Idol()
+{}

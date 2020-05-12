@@ -12,6 +12,10 @@
 Level::Level(Game* game)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
+    // TO DO - can create if block --> if at this level make this many monsters, this many idols, this many stair cases
+    m_staircase = new Staircase;
+    m_idol = new Idol;
+    
     // TO DO - write algorithm to properly create level with walls
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
@@ -19,10 +23,10 @@ Level::Level(Game* game)        // Level Constructor
         }
     }
     // TO DO - delete hardcoded wall perimeter
-    for (int i = 0; i < 70; i++){
+    for (int i = 0; i < 70; i++) {
         m_level[0][i] = '#';
     }
-    for (int i = 0; i < 70; i++){
+    for (int i = 0; i < 70; i++) {
         m_level[17][i] = '#';
     }
     
@@ -34,17 +38,23 @@ Level::Level(Game* game)        // Level Constructor
         m_level[k][7] = '#';
     }
     
-    // put staircase randomly in level
-    int stair_row = randInt(0, 17);
-    int stair_col = randInt(0, 69);
-    while (m_level[stair_row][stair_col] == '#') {
-        stair_row = randInt(0, 17);
-        stair_col = randInt(0, 69);
+   
+    // put staircase or idol randomly in level
+    if (m_game->dungeon()->getCurrLevel() >= 0 && m_game->dungeon()->getCurrLevel() < 4) {
+        while (m_level[m_staircase->getRow()][m_staircase->getCol()] == '#') {
+            m_staircase->move(randInt(0, 17), randInt(0, 69));
+        }
+        m_level[m_staircase->getRow()][m_staircase->getCol()] = '>';
     }
-    m_level[stair_row][stair_col] = '>';
+    else if (m_game->dungeon()->getCurrLevel() == 4) {
+        while (m_level[m_idol->getRow()][m_idol->getCol()] == '#') {
+            m_staircase->move(randInt(0, 17), randInt(0, 69));
+        }
+        m_level[m_idol->getRow()][m_idol->getCol()] = '&';
+    }
     
     // put player randomly in level
-    while(m_level[m_player->getRowNum()][m_player->getColNum()] == '#' || (m_player->getRowNum() == stair_row && m_player->getColNum() == stair_col)) {
+    while(m_level[m_player->getRowNum()][m_player->getColNum()] == '#' || (m_player->getRowNum() == m_staircase->getRow() && m_player->getColNum() == m_staircase->getCol())) {
         m_player->move(randInt(0, 17), randInt(0, 69));
     }
     
@@ -72,7 +82,7 @@ void Level::display()
             if (i == m_player->getRowNum() && j == m_player->getColNum())
                 temp[i][j] = '@';
             
-            // don't need if statement to print out stair case
+            // don't need if statement to print out staircase nor idol
             cout << temp[i][j];
         }
         cout << endl;

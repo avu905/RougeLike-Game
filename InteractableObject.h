@@ -11,16 +11,46 @@
 
 #include<iostream>
 
+#include "utilities.h"
+
+using namespace std;
+
 // ========== InteractableObject Declaration ==========
 class InteractableObject
 {
 public:
-    InteractableObject();        // constructor
+    InteractableObject(int row, int col);        // constructor
     ~InteractableObject();       // destructor
+    
+    void move(int row, int col);
+    
+    // accessors
+    int getRow();
+    int getCol();
     
 private:
     int m_row;
     int m_col;
+};
+
+// ========== Staircase Declaration ==========
+class Staircase : public InteractableObject
+{
+public:
+    Staircase();
+    ~Staircase();
+private:
+};
+
+
+// ========== Idol Declaration ==========
+class Idol : public InteractableObject
+{
+public:
+    Idol();
+    ~Idol();
+private:
+    
 };
 
 using namespace std;

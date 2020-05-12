@@ -29,9 +29,10 @@ public:
     
     // accessors
     Level* level();
+    int getCurrLevel();
     
 private:
-    Level* level_ptr[5];
+    Level* level_ptr;
     Game* m_game;
     int curr_level;
 };
