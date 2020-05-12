@@ -24,7 +24,7 @@ Game::Game(int goblinSmellDistance)     // Game Constructor
     m_dungeon = new Dungeon(this);
     m_dungeon->newLevel();
     m_dungeon->level()->display();
-        cout << "Dungeon Level: " << m_dungeon->getCurrLevel() << ", Hit points: " << m_player->getHitPoints() << ", Armor: " << m_player->getArmor() << ", Strength: " << m_player->getStrength() << ", Dexterity: " << m_player->getDexterity() << endl;
+        cout << "Dungeon Level: " << m_dungeon->getCurrLevel() << ", Hit points: " << m_player->getHitPoints() << ", Armor: " << m_player->getArmor() << ", Strength: " << m_player->getStrength() << ", Dexterity: " << m_player->getDexterity() << endl << endl;
 }
 
 Player* Game::player()
@@ -59,8 +59,11 @@ void Game::play()
             m_dungeon->newLevel();
         }
         if (c == 'g' && m_dungeon->level()->arr_char(m_player->getRowNum(), m_player->getColNum()) == '&') {      // pick up idol
-            cout << "You pick up the gold idol" << endl << "Congratulations, you won!" << endl;
-            
+            cout << "You pick up the gold idol" << endl << "Congratulations, you won!" << endl << "Press q to exit game.";
+            char quit;
+            while ((quit = getCharacter()) != 'q')
+                {}
+            return;
             // print winning message
             // disable all controls
             // can only press q to quit

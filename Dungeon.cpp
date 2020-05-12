@@ -25,7 +25,7 @@ void Dungeon::display()         // calls level's display & keeps track of curren
     level_ptr->display();
     
     // print dungeon level and player stats
-    cout << "Dungeon Level: " << curr_level << ", Hit points: " << m_game->player()->getHitPoints() << ", Armor: " << m_game->player()->getArmor() << ", Strength: " << m_game->player()->getStrength() << ", Dexterity: " << m_game->player()->getDexterity() << endl;
+    cout << "Dungeon Level: " << curr_level << ", Hit points: " << m_game->player()->getHitPoints() << ", Armor: " << m_game->player()->getArmor() << ", Strength: " << m_game->player()->getStrength() << ", Dexterity: " << m_game->player()->getDexterity() << endl << endl;
 }
 
 void Dungeon::newLevel()
