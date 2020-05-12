@@ -25,7 +25,7 @@ public:
     ~Dungeon();                 // Dungeon Destructor
         
     void display();
-    void incrementLevel();
+    void newLevel();
     
     // accessors
     Level* level();

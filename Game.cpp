@@ -53,7 +53,7 @@ void Game::play()
             m_player->move(m_player->getRowNum()+1, m_player->getColNum());
         }
         if (c == '>' && m_dungeon->level()->arr_char(m_player->getRowNum(), m_player->getColNum()) == '>')  {     // go down stairway
-            m_dungeon->incrementLevel();
+            m_dungeon->newLevel();
         }
 //        if (getCharacter() == 'g')      // pick up object
 //            {}

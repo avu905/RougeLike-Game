@@ -16,6 +16,7 @@ Dungeon::Dungeon(Game* game)    // Dungeon Constructor
     curr_level = 0;
     level_ptr[0] = new Level(game);
     level_ptr[0]->display();
+    cout << "Dungeon Level: " << curr_level << ", Hit points: " << m_game->player()->getHitPoints() << ", Armor: " << m_game->player()->getArmor() << ", Strength: " << m_game->player()->getStrength() << ", Dexterity: " << m_game->player()->getDexterity() << endl;
 }
 
 Dungeon::~Dungeon()             // Dungeon Destructor
@@ -23,29 +24,20 @@ Dungeon::~Dungeon()             // Dungeon Destructor
 
 void Dungeon::display()         // calls level's display & keeps track of current level
 {
-    // TO DO - print current dungeon level, player's stats
+    // print level
+    level_ptr[curr_level]->display();
     
-    if (curr_level == 0)
-        level_ptr[curr_level]->display();
-    
-    else if (curr_level > 0 && curr_level < 4) {
-        level_ptr[curr_level] = new Level(m_game);
-        level_ptr[curr_level]->display();
-        delete level_ptr[curr_level-1];
-    }
-    
-    else if (curr_level == 4){
-        // TO DO - last level does not print out
-        level_ptr[curr_level]->display();
-        delete level_ptr[curr_level-1];
-    }
-    
+    // print dungeon level and player stats
     cout << "Dungeon Level: " << curr_level << ", Hit points: " << m_game->player()->getHitPoints() << ", Armor: " << m_game->player()->getArmor() << ", Strength: " << m_game->player()->getStrength() << ", Dexterity: " << m_game->player()->getDexterity() << endl;
 }
 
-void Dungeon::incrementLevel()
-{curr_level++;}
+void Dungeon::newLevel()
+{
+    curr_level++;
+    level_ptr[curr_level] = new Level(m_game);
+    delete level_ptr[curr_level-1];
+}
 
 Level* Dungeon::level()
-{return level_ptr[curr_level];}
+    {return level_ptr[curr_level];}
 
