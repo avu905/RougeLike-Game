@@ -16,6 +16,7 @@ class Actor;
 //#include "Actor.h"
 #include "Game.h"
 #include "InteractableObject.h"
+#include "utilities.h"
 
 using namespace std;
 
@@ -37,7 +38,8 @@ private:
     Player* m_player;                               // pointer to player
     Staircase* m_staircase;
     Idol* m_idol;
-    vector<Actor*> m_actor;                         // pointer to monsters in level
+    
+    vector<Actor*> m_actor;
     // each level will have its own monsters
     // each level will have its own scrolls/weapons/items
 };

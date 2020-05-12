@@ -10,6 +10,9 @@
 
 
 // ========== InteractableObject Implementation ==========
+InteractableObject::InteractableObject()
+{}
+
 InteractableObject::InteractableObject(int row, int col)
 {
     m_row = row;
@@ -45,4 +48,11 @@ Idol::Idol()
 {}
 
 Idol::~Idol()
+{}
+
+// ========== Weapon Implementation ==========
+Weapon::Weapon()
+{}
+
+Weapon::~Weapon()
 {}

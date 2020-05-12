@@ -80,3 +80,20 @@ bool Player::attemptMove(char c)
     return true;
 }
 
+// =======================================================
+// ============== SNAKEWOMAN IMPLEMENTATION ==============
+// =======================================================
+SnakeWoman::SnakeWoman(Game* game)
+: Actor(randInt(0, 17), randInt(0, 69), randInt(3, 6), "magic fangs of sleep", 3, 2, 3, 0, game, 'S')
+{}
+
+SnakeWoman::~SnakeWoman()
+{}
+
+bool SnakeWoman::attemptMove(char c)
+{
+    return true;
+}
+
+
+

@@ -64,9 +64,6 @@ void Game::play()
             while ((quit = getCharacter()) != 'q')
                 {}
             return;
-            // print winning message
-            // disable all controls
-            // can only press q to quit
         }
 //        if (c == 'g')
 //            {}

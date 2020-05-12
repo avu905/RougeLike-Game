@@ -27,8 +27,7 @@ class Actor
 public:
     Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
     virtual ~Actor();
-    
-    
+
     virtual bool attemptMove(char c) = 0;
     void move(int row, int col);
     
@@ -65,6 +64,16 @@ public:
     virtual bool attemptMove(char c);
 private:
     // inventory
+};
+
+// ============== SNAKEWOMAN DECLARATION ==============
+class SnakeWoman : public Actor
+{
+public:
+    SnakeWoman(Game* game);
+    ~SnakeWoman();
+    virtual bool attemptMove(char c);
+private:
 };
 
 #endif // ACTOR_H

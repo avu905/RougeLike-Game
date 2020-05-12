@@ -19,8 +19,9 @@ using namespace std;
 class InteractableObject
 {
 public:
-    InteractableObject(int row, int col);        // constructor
-    ~InteractableObject();       // destructor
+    InteractableObject();                        // non-parameter constructor for weapons
+    InteractableObject(int row, int col);        // parameter constructor for staircase and idol
+    virtual ~InteractableObject();               // destructor
     
     void move(int row, int col);
     
@@ -38,7 +39,7 @@ class Staircase : public InteractableObject
 {
 public:
     Staircase();
-    ~Staircase();
+    virtual ~Staircase();
 private:
 };
 
@@ -48,11 +49,36 @@ class Idol : public InteractableObject
 {
 public:
     Idol();
-    ~Idol();
+    virtual ~Idol();
 private:
     
 };
 
-using namespace std;
+// ========== Weapon Declaration ==========
+class Weapon : public InteractableObject
+{
+public:
+    Weapon();
+    virtual ~Weapon();
+private:
+    string m_actionString;
+    int m_dexterity;
+    int m_damage;
+};
+
+class Maces : public InteractableObject
+{};
+
+class LongsSword : public InteractableObject
+{};
+
+class ShortSword : public InteractableObject
+{};
+
+class MagicAxe : public InteractableObject
+{};
+
+class MagicFangsOfSleep : public InteractableObject
+{};
 
 #endif // INTER_OBJ_H
