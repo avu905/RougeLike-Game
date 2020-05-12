@@ -25,7 +25,7 @@ using namespace std;
 class Actor
 {
 public:
-    Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game);
+    Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
     virtual ~Actor();
     
     
@@ -33,9 +33,13 @@ public:
     void move(int row, int col);
     
     // accessors
+    Game* game();
     int getRowNum();
     int getColNum();
-    Game* game();
+    int getHitPoints();
+    int getArmor();
+    int getStrength();
+    int getDexterity();
     
 private:
     int m_row;          // current row position in level
@@ -46,6 +50,7 @@ private:
     int m_strpoints;    // strength points
     int m_dexpoints;    // dexterity points
     int m_sleeptime;    // sleep time
+    char m_char;        // Actor represented by char
     
     Game* m_game;
 };

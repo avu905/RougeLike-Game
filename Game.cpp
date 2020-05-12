@@ -21,7 +21,6 @@ using namespace std;
 Game::Game(int goblinSmellDistance)     // Game Constructor
 {
     m_player = new Player(this);
-    m_player->move(randInt(0, 17), randInt(0, 69));
     m_dungeon = new Dungeon(this);
 }
 
@@ -41,7 +40,7 @@ void Game::play()
     cout << "Press q to exit game." << endl;
     char c;
     while ((c = getCharacter()) != 'q') {
-        if (c == 'h' && m_player->attemptMove(c) == true) {             // move left
+        if (c == 'h' && m_player->attemptMove(c) == true) {         // move left
             m_player->move(m_player->getRowNum(), m_player->getColNum()-1);
         }
         if (c == 'l' && m_player->attemptMove(c) == true) {        // move right
@@ -53,6 +52,9 @@ void Game::play()
         if (c == 'j' && m_player->attemptMove(c) == true) {        // move down
             m_player->move(m_player->getRowNum()+1, m_player->getColNum());
         }
+        if (c == '>' && m_dungeon->level()->arr_char(m_player->getRowNum(), m_player->getColNum()) == '>')  {     // go down stairway
+            m_dungeon->incrementLevel();
+        }
 //        if (getCharacter() == 'g')      // pick up object
 //            {}
 //        if (getCharacter() == 'w')      // wield weapon and select from inventory
@@ -60,8 +62,6 @@ void Game::play()
 //        if (getCharacter() == 'r')      // read scroll and select from inventory
 //            {}
 //        if (getCharacter() == 'i')      // see inventory
-//            {}
-//        if (getCharacter() == '>')      // go down stairway
 //            {}
 //        if (getCharacter() == 'c')      // cheat
 //            {}

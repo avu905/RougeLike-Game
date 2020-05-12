@@ -10,29 +10,32 @@
 #define LEVEL_H
 
 #include <iostream>
+#include <vector>
 
-#include "Actor.h"
+class Actor;
+//#include "Actor.h"
 #include "Game.h"
-
 
 using namespace std;
 
 class Level
 {
 public:
-    Level(Game* game);      // Level Constructor
-    ~Level();               // Level Destructor
+    Level(Game* game);                      // Level Constructor
+    ~Level();                               // Level Destructor
     
     void display();
+    void set_char(int row, int col, char c);
     
     // accessors
     char arr_char(int row, int col);
     
 private:
-    char m_level[18][70]; // 18 rows x 70 columns
-    Game* m_game;
+    char m_level[18][70];                           // level layout
+    Game* m_game;                                   // pointer to game
+    Player* m_player;                               // pointer to player
+    vector<Actor*> m_actor;                         // pointer to monsters in level
     // each level will have its own monsters
-    // each level will have its own stairs
     // each level will have its own scrolls/weapons/items
 };
 

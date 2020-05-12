@@ -22,9 +22,10 @@ class Dungeon
 {
 public:
     Dungeon(Game* game);        // Dungeon Constructor
-    ~Dungeon();                 // Dungeon destructor
+    ~Dungeon();                 // Dungeon Destructor
         
     void display();
+    void incrementLevel();
     
     // accessors
     Level* level();

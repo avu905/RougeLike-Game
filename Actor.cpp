@@ -11,19 +11,23 @@
 // ===================================================
 // ============== ACTOR IMPLEMENTATION ===============
 // ===================================================
-Actor::Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game)
+Actor::Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c)
 {
+    // Set initial values for actor
+    m_row = row;
+    m_col = col;
+    m_hitpoints = hitpoints;
+    m_weapon = weapon;
+    m_armorpoints = armorpoints;
+    m_strpoints = strpoints;
+    m_dexpoints = dexpoints;
+    m_sleeptime = sleeptime;
     m_game = game;
+    m_char = c;
 }
 
 Actor::~Actor()      // Actor Destructor
 {}
-
-int Actor::getRowNum()
-    {return m_row;}
-
-int Actor::getColNum()
-    {return m_col;}
 
 void Actor::move(int row, int col)
 {
@@ -32,15 +36,31 @@ void Actor::move(int row, int col)
 }
 
 Game* Actor::game()
-{
-    return m_game;
-}
+    {return m_game;}
+
+int Actor::getRowNum()
+    {return m_row;}
+
+int Actor::getColNum()
+    {return m_col;}
+
+int Actor::getHitPoints()
+    {return m_hitpoints;}
+
+int Actor::getArmor()
+    {return m_armorpoints;}
+
+int Actor::getStrength()
+    {return m_strpoints;}
+
+int Actor::getDexterity()
+    {return m_dexpoints;}
 
 // ===================================================
 // ============== PLAYER IMPLEMENTATION ==============
 // ===================================================
 Player::Player(Game* game)
-: Actor(randInt(0, 17), randInt(0, 69), 20, "short sword", 2, 2, 2, 0, game)
+: Actor(randInt(0, 17), randInt(0, 69), 20, "short sword", 2, 2, 2, 0, game, '@')
 {}
 
 Player::~Player()
