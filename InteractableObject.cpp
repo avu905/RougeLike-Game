@@ -8,15 +8,17 @@
 
 #include "InteractableObject.h"
 
+// ========================================================
+// ========== INTERACTABLE OBJECT IMPLEMENTATION ==========
+// ========================================================
+//InteractableObject::InteractableObject()
+//{}
 
-// ========== InteractableObject Implementation ==========
-InteractableObject::InteractableObject()
-{}
-
-InteractableObject::InteractableObject(int row, int col)
+InteractableObject::InteractableObject(int row, int col, char c)
 {
     m_row = row;
     m_col = col;
+    m_symbol = c;
 }
 
 InteractableObject::~InteractableObject()
@@ -34,25 +36,32 @@ int InteractableObject::getRow()
 int InteractableObject::getCol()
     {return m_col;}
 
-// ========== Staircase Implementation ==========
+char InteractableObject::getSymbol()
+    {return m_symbol;}
+
+// =======================================================
+// ========== PROGRESSION OBJECT IMPLEMENTATION ==========
+// =======================================================
+ProgressionObject::ProgressionObject(char c)
+: InteractableObject(randInt(0, 17), randInt(0, 69), c)
+{}
+
+ProgressionObject::~ProgressionObject()
+{}
+
+
+// ========== STAIRCASE IMPLEMENTATION ==========
 Staircase::Staircase()
-: InteractableObject(randInt(0, 17), randInt(0, 69))
+: ProgressionObject('>')
 {}
 
 Staircase::~Staircase()
 {}
 
-// ========== Idol Implementation ==========
+// ========== IDOL IMPLEMENTATION ==========
 Idol::Idol()
-: InteractableObject(randInt(0, 17), randInt(0, 69))
+: ProgressionObject('&')
 {}
 
 Idol::~Idol()
-{}
-
-// ========== Weapon Implementation ==========
-Weapon::Weapon()
-{}
-
-Weapon::~Weapon()
 {}

@@ -12,8 +12,9 @@
 #include <iostream>
 #include <vector>
 
-class Actor;
+//class Actor;
 //#include "Actor.h"
+class Monster;
 #include "Game.h"
 #include "InteractableObject.h"
 #include "utilities.h"
@@ -36,10 +37,10 @@ private:
     char m_level[18][70];                           // level layout
     Game* m_game;                                   // pointer to game
     Player* m_player;                               // pointer to player
-    Staircase* m_staircase;
-    Idol* m_idol;
+    ProgressionObject* m_progressionObject;         // points to staircase or idol
     
-    vector<Actor*> m_actor;
+    vector<Monster*> m_monsters;
+    //int maxMonsters = randInt(2, 5*(m_game->dungeon()->getCurrLevel()+1)+1);
     // each level will have its own monsters
     // each level will have its own scrolls/weapons/items
 };

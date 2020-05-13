@@ -14,6 +14,7 @@
 
 #include "Dungeon.h"
 #include "Game.h"
+//#include "globals.h" - if uncommented causes program to build but run forever
 #include "Level.h"
 #include "utilities.h"
 
@@ -21,7 +22,9 @@
 
 using namespace std;
 
+// ===============================================
 // ============== ACTOR DECLARATION ==============
+// ===============================================
 class Actor
 {
 public:
@@ -29,22 +32,23 @@ public:
     virtual ~Actor();
 
     virtual bool attemptMove(char c) = 0;
-    void move(int row, int col);
+    virtual void move(int row, int col);
     
     // accessors
     Game* game();
-    int getRowNum();
-    int getColNum();
-    int getHitPoints();
-    int getArmor();
-    int getStrength();
-    int getDexterity();
+    virtual int getRowNum();
+    virtual int getColNum();
+    virtual int getHitPoints();
+    virtual int getArmor();
+    virtual int getStrength();
+    virtual int getDexterity();
+    virtual char getChar();
     
 private:
     int m_row;          // current row position in level
     int m_col;          // current col position in level
     int m_hitpoints;    // hit points
-    string m_weapon;    // weapon
+    string m_weapon;    // weapon - TO DO - change to weapon pointer
     int m_armorpoints;  // armor points
     int m_strpoints;    // strength points
     int m_dexpoints;    // dexterity points
@@ -54,7 +58,9 @@ private:
     Game* m_game;
 };
 
+// ================================================
 // ============== PLAYER DECLARATION ==============
+// ================================================
 
 class Player : public Actor
 {
@@ -63,11 +69,24 @@ public:
     ~Player();
     virtual bool attemptMove(char c);
 private:
-    // inventory
+    // vector<GameObjects*> m_inventory (26) 
+};
+
+// ====================================================
+// ============= MONSTER DECLARATION ==================
+// ====================================================
+class Monster : public Actor
+{
+public:
+    Monster(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
+    virtual ~Monster();
+    
+private:
+    // Weapon* m_weapon;
 };
 
 // ============== SNAKEWOMAN DECLARATION ==============
-class SnakeWoman : public Actor
+class SnakeWoman : public Monster
 {
 public:
     SnakeWoman(Game* game);

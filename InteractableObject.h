@@ -15,12 +15,14 @@
 
 using namespace std;
 
-// ========== InteractableObject Declaration ==========
+// =====================================================
+// ========== INTERACTABLE OBJECT DECLARATION ==========
+// =====================================================
 class InteractableObject
 {
 public:
-    InteractableObject();                        // non-parameter constructor for weapons
-    InteractableObject(int row, int col);        // parameter constructor for staircase and idol
+//    InteractableObject();                        // non-parameter constructor for weapons
+    InteractableObject(int row, int col, char c);        // parameter constructor for staircase and idol
     virtual ~InteractableObject();               // destructor
     
     void move(int row, int col);
@@ -28,14 +30,28 @@ public:
     // accessors
     int getRow();
     int getCol();
+    char getSymbol();
     
 private:
     int m_row;
     int m_col;
+    char m_symbol;
 };
 
-// ========== Staircase Declaration ==========
-class Staircase : public InteractableObject
+// =====================================================
+// ========== PROGRESSION OBJECT DECLARATIONS ==========
+// =====================================================
+class ProgressionObject : public InteractableObject
+{
+public:
+    ProgressionObject(char c);
+    virtual ~ProgressionObject();
+private:
+};
+
+
+// ========== STAIRCASE DECLARATION ==========
+class Staircase : public ProgressionObject
 {
 public:
     Staircase();
@@ -44,8 +60,8 @@ private:
 };
 
 
-// ========== Idol Declaration ==========
-class Idol : public InteractableObject
+// ========== IDOL DECLARATION ==========
+class Idol : public ProgressionObject
 {
 public:
     Idol();
@@ -54,31 +70,8 @@ private:
     
 };
 
-// ========== Weapon Declaration ==========
-class Weapon : public InteractableObject
-{
-public:
-    Weapon();
-    virtual ~Weapon();
-private:
-    string m_actionString;
-    int m_dexterity;
-    int m_damage;
-};
-
-class Maces : public InteractableObject
-{};
-
-class LongsSword : public InteractableObject
-{};
-
-class ShortSword : public InteractableObject
-{};
-
-class MagicAxe : public InteractableObject
-{};
-
-class MagicFangsOfSleep : public InteractableObject
-{};
+// =========================================
+// ========== WEAPON DECLARATIONS ==========
+// =========================================
 
 #endif // INTER_OBJ_H
