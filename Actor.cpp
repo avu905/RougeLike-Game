@@ -13,19 +13,25 @@
 // ===================================================
 // ============== ACTOR IMPLEMENTATION ===============
 // ===================================================
-Actor::Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c)
+Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c)
 {
     // Set initial values for actor
     m_row = row;
     m_col = col;
     m_hitpoints = hitpoints;
-    m_weapon = weapon;
+    m_name = name;
     m_armorpoints = armorpoints;
     m_strpoints = strpoints;
     m_dexpoints = dexpoints;
     m_sleeptime = sleeptime;
     m_game = game;
     m_char = c;
+    
+    m_maxHitpoints = 99;
+    m_maxArmorpoints = 99;
+    m_maxStrpoints = 99;
+    m_maxDexpoints = 99;
+    m_maxSleeptime = 0;
 }
 
 Actor::~Actor()      // Actor Destructor
@@ -60,6 +66,8 @@ int Actor::getColNum()
     {return m_col;}
 int Actor::getHitPoints()
     {return m_hitpoints;}
+string Actor::getName()
+    {return m_name;}
 int Actor::getArmor()
     {return m_armorpoints;}
 int Actor::getStrength()
@@ -75,7 +83,7 @@ int Actor::getSleepTime()
 // ============== PLAYER IMPLEMENTATION ==============
 // ===================================================
 Player::Player(Game* game, int initialRow, int initialCol)
-: Actor(initialRow, initialCol, 20, "short sword", 2, 2, 2, 0, game, '@')
+: Actor(initialRow, initialCol, 20, "Player", 2, 2, 2, 0, game, '@')
 {}
 
 Player::~Player()

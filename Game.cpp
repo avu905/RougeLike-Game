@@ -45,6 +45,7 @@ void Game::play()
         // TO DO (1) - check board for dead monsters and clear board of dead monsters (destruct monster)
         // TO DO (1) - 1/10th chance player hitpoints will increase
         
+        // TO DO (1) - newlines print out correctly and that there is not a newline before the grid is displayed
         clearScreen();
         
         char userInput;

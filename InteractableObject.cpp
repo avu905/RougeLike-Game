@@ -33,6 +33,49 @@ char InteractableObject::getSymbol()
     {return m_symbol;}
 
 // =======================================================
+// ========== WEAPON IMPLEMENTATION ======================
+// =======================================================
+Weapon::Weapon(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
+: InteractableObject(row, col, symbol, game)
+{
+    m_name = name;
+    m_action = action;
+    m_dexterityBonus = dexterityBonus;
+    m_damageAmount = damageAmount;
+}
+
+Weapon::~Weapon()
+{}
+
+Shortsword::Shortsword(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
+: Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
+{}
+
+Shortsword::~Shortsword()
+{}
+
+
+
+// FOR LEVEL CONSTRUCTOR
+// 2 or 3 scrolls or weapons are put on each level
+// NEVER put on level - must kill monster to obtain one
+// magic fangs of sleep
+// magic axes
+// teleportation scrolls
+
+
+// =======================================================
+// ========== SCROLL IMPLEMENTATION ======================
+// =======================================================
+
+// SCROLLS - shown as ?
+    // scroll of teleportation
+    // scroll of improve armor
+    // scroll of raise strength
+    // scroll of enhance health
+    // scroll of enhance dexterity
+
+// =======================================================
 // ========== PROGRESSION OBJECT IMPLEMENTATION ==========
 // =======================================================
 ProgressionObject::ProgressionObject(int row, int col, char symbol, Game* game)

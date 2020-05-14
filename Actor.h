@@ -28,7 +28,7 @@ using namespace std;
 class Actor
 {
 public:
-    Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
+    Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
     virtual ~Actor();
 
     // mutators
@@ -46,19 +46,24 @@ public:
     virtual int getDexterity();
     virtual char getChar();
     virtual int getSleepTime();
+    virtual string getName();
     
 private:
     int m_row;          // current row position in level
     int m_col;          // current col position in level
     int m_hitpoints;    // hit points
-    string m_weapon;    // weapon - TO DO - change to weapon pointer
+    int m_maxHitpoints;
+    string m_name;      // for action string
     int m_armorpoints;  // armor points
+    int m_maxArmorpoints;
     int m_strpoints;    // strength points
+    int m_maxStrpoints;
     int m_dexpoints;    // dexterity points
+    int m_maxDexpoints;
     int m_sleeptime;    // sleep time
-    char m_char;        // Actor represented by char
-    
-    Game* m_game;
+    int m_maxSleeptime;
+    char m_char;        // actor represented by char
+    Game* m_game;       // pointer to game
 };
 
 // ================================================
@@ -72,7 +77,7 @@ public:
     ~Player();
     virtual bool attemptMove(char c);
 private:
-    // vector<GameObjects*> m_inventory (26) 
+    vector<InteractableObject*> m_inventory;
 };
 
 #endif // ACTOR_H
