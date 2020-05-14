@@ -27,17 +27,26 @@ public:
     Level(Game* game);                      // Level Constructor
     ~Level();                               // Level Destructor
     
-    void display();
-    void set_char(int row, int col, char c);
+    // non-accessors
+    void display();                         // display the level
+    bool validMove(int row, int col);       // check if actor can move to that position
+    Player* createPlayer();                 // create a new player and return a pointer to the player
+    void freePosition(int &row, int &col);  // set to free position on m_level
+    bool pickUpObject();                    // pick up idol, scroll, or weapon
     
     // accessors
-    char arr_char(int row, int col);
+    char getLevelChar(int row, int col) {return m_level[row][col];}
+    InteractableObject* progressObj() {return m_progressionObject;};
     
 private:
     char m_level[18][70];                           // level layout
     Game* m_game;                                   // pointer to game
     Player* m_player;                               // pointer to player
-    ProgressionObject* m_progressionObject;         // points to staircase or idol
+    
+    int initialPlayerRow;                           // must make level before placing
+    int initialPlayerCol;                           // must make level
+    
+    ProgressionObject* m_progressionObject;         // pointer to staircase or idol
     
     vector<Monster*> m_monsters;
     //int maxMonsters = randInt(2, 5*(m_game->dungeon()->getCurrLevel()+1)+1);

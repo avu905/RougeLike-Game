@@ -6,29 +6,22 @@
 //  Copyright © 2020 Alex Vu. All rights reserved.
 //
 
+#include "Game.h"
+#include "Dungeon.h"
 #include "InteractableObject.h"
 
 // ========================================================
 // ========== INTERACTABLE OBJECT IMPLEMENTATION ==========
 // ========================================================
-//InteractableObject::InteractableObject()
-//{}
+InteractableObject::InteractableObject()                    // default constructor
+{}
 
-InteractableObject::InteractableObject(int row, int col, char c)
-{
-    m_row = row;
-    m_col = col;
-    m_symbol = c;
-}
+InteractableObject::InteractableObject(int row, int col, char symbol, Game* game)   // progression object constructor
+: m_row(row), m_col(col), m_symbol(symbol), m_game(game)
+{}
 
 InteractableObject::~InteractableObject()
 {}
-
-void InteractableObject::move(int row, int col)
-{
-    m_row = row;
-    m_col = col;
-}
 
 int InteractableObject::getRow()
     {return m_row;}
@@ -42,26 +35,26 @@ char InteractableObject::getSymbol()
 // =======================================================
 // ========== PROGRESSION OBJECT IMPLEMENTATION ==========
 // =======================================================
-ProgressionObject::ProgressionObject(char c)
-: InteractableObject(randInt(0, 17), randInt(0, 69), c)
+ProgressionObject::ProgressionObject(int row, int col, char symbol, Game* game)
+: InteractableObject(row, col, symbol, game)
 {}
 
 ProgressionObject::~ProgressionObject()
 {}
 
-
-// ========== STAIRCASE IMPLEMENTATION ==========
-Staircase::Staircase()
-: ProgressionObject('>')
+Staircase::Staircase(int row, int col, char symbol, Game* game)
+: ProgressionObject(row, col, symbol, game)
 {}
 
 Staircase::~Staircase()
 {}
 
-// ========== IDOL IMPLEMENTATION ==========
-Idol::Idol()
-: ProgressionObject('&')
+Idol::Idol(int row, int col, char symbol, Game* game)
+: ProgressionObject(row, col, symbol, game)
 {}
 
 Idol::~Idol()
 {}
+
+
+

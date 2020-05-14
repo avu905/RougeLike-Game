@@ -13,34 +13,12 @@
 Level::Level(Game* game)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
-    // populate level with monsters, idol, and staircase
-    // TO DO - if block "if at this level then make this many monsters, this many idols, this many staircases,etc"
-                // or create a function saying if this is the current level, make this monster
-    // TO DO - delete snakewomen in level destructor (and delete other monsters)
-    // TO DO - many snakewoman, 1 dragon, 1 goblin, 1 bogeyman per level
-    if (m_game->dungeon()->getCurrLevel() == 0) {
-        m_progressionObject = new Staircase;
-        int maxMonsters = randInt(2, 5*(m_game->dungeon()->getCurrLevel()+1)+1);
-        for (int i = 0; i < maxMonsters; i++) {
-            m_monsters.push_back(new SnakeWoman(game));
-        }
-    }
-    if (m_game->dungeon()->getCurrLevel() == 1)
-        m_progressionObject = new Staircase;
-    if (m_game->dungeon()->getCurrLevel() == 2)
-        m_progressionObject = new Staircase;
-    if (m_game->dungeon()->getCurrLevel() == 3)
-        m_progressionObject = new Staircase;
-    if (m_game->dungeon()->getCurrLevel() == 4)
-        m_progressionObject = new Idol;
-        
-    // TO DO - write algorithm to properly create level with walls
+    // TO DO - write algorithm to populate levels with random walls and rooms
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
             m_level[i][j] = ' ';
         }
     }
-    // TO DO - delete hardcoded wall perimeter
     for (int i = 0; i < 70; i++) {
         m_level[0][i] = '#';
     }
@@ -56,85 +34,111 @@ Level::Level(Game* game)        // Level Constructor
         m_level[k][7] = '#';
     }
     
-    // TO DO - move changing 2D level array into display function and out of constructor
-    // put staircase or idol randomly in level
-    while (m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] == '#') {
-        m_progressionObject->move(randInt(0, 17), randInt(0, 69));
-    }
-   //m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] =
+    // TO DO - put weapon and scroll objects in level
+    // TO DO - put monsters in level
+    
+    // TO DO - put idol or staircase in level
+    int progressionObjectRow = randInt(0, 17);
+    int progressionObjectCol = randInt(0, 69);
+    freePosition(progressionObjectRow, progressionObjectCol);
     if (m_game->dungeon()->getCurrLevel() != 4)
-        m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] = '>';
+        m_progressionObject = new Staircase(progressionObjectRow, progressionObjectCol, '>', m_game);
     else if (m_game->dungeon()->getCurrLevel() == 4)
-        m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] = '&';
+        m_progressionObject = new Idol(progressionObjectRow, progressionObjectCol, '&', m_game);
     
-    // put player randomly in level - not on a wall
-    while(m_level[m_player->getRowNum()][m_player->getColNum()] == '#') {
-        m_player->move(randInt(0, 17), randInt(0, 69));
-    }
-    
-    // TO DO - randomly place monster in level
-    // TO DO - not on a wall
-    // TO DO - not on another actor
-    for (int i = 0; i < m_monsters.size(); i++) {
-        while(m_level[m_monsters[i]->getRowNum()][m_monsters[i]->getColNum()] == '#' || (m_monsters[i]->getRowNum() == m_player->getRowNum() && m_monsters[i]->getColNum() == m_player->getColNum())) {
-            m_monsters[i]->move(randInt(0, 17), randInt(0, 69));
-        }
-    }
+    // must create level before player so during construction of level, must know where to place player into level before creating player at that position
+    initialPlayerRow = randInt(0, 17);
+    initialPlayerCol = randInt(0, 69);
 }
 
 // TO DO - implement Level Destructor
 Level::~Level()                     // Level Destructor
 {
+    // TO DO (1) - finish implementing level destructor (especially for monster vector and weapons and scrolls)
+    // TO DO (1) - delete progression object, monsters, weapons, scrolls
     delete m_progressionObject;
-    for (int i = 0; i < m_monsters.size(); i++) {
-        delete m_monsters[i];
-    }
 }
 
 void Level::display()
 {
-    // reassign values into temporary 2D array
-    char temp[18][70];
-    for (int i = 0; i < 18; i++) {
-        for (int j = 0; j < 70; j++){
-            temp[i][j] = m_level[i][j];
+    // populate m_level with only walls and blank spaces
+    // TO DO (1) - populate m_level with only walls and interactable objects (not including staircases and golden idol)
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 70; col++) {
+            if (m_level[row][col] != '#')
+                m_level[row][col] = ' ';
         }
     }
     
-    // TO DO - put in loop to print out monsters
-    // TO DO - put in loop to print out weapons
-    // TO DO - put loop to print out scrolls
+    // TO DO (1) - put objects into m_level
     
-    // put monsters into 2D array
-    for (int r = 0; r < 18; r++) {
-        for (int c = 0; c < 70; c++) {
-            for (int i = 0; i < m_monsters.size(); i++) {
-                if (r == m_monsters[i]->getRowNum() && c == m_monsters[i]->getColNum())
-                    temp[r][c] = m_monsters[i]->getChar();
-            }
-        }
-    }
-    // put player into 2D arry and print
-    for (int i = 0; i < 18; i++) {
-        for (int j = 0; j < 70; j++) {
-            if (i == m_player->getRowNum() && j == m_player->getColNum())
-                temp[i][j] = m_player->getChar();
-            // don't need if statement to print out staircase nor idol - TO DO (fix and move changing to > or & into display function)
-            cout << temp[i][j];
+    // put progression object onto level
+    if (m_game->dungeon()->getCurrLevel() != 4)
+        m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] = '>';
+    else if (m_game->dungeon()->getCurrLevel() == 4)
+        m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] = '&';
+    
+    // TO DO (1) - put monsters into m_level
+    
+    // put player onto m_level
+    if (m_level[m_player->getRowNum()][m_player->getColNum()] != '#')
+        m_level[m_player->getRowNum()][m_player->getColNum()] = m_player->getChar();
+    
+    
+    // print out level
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 70; col++) {
+            cout << m_level[row][col];
         }
         cout << endl;
     }
     
+    // print out stats
+    cout << "Dungeon Level: " << m_game->dungeon()->getCurrLevel() << ", Hit points: " << m_player->getHitPoints() << ", Armor: " << m_player->getArmor() << ", Strength: " << m_player->getStrength() << ", Dexterity: " << m_player->getDexterity() << endl;
 }
 
-char Level::arr_char(int row, int col)
+bool Level::validMove(int row, int col)
 {
-    return m_level[row][col];
-    
+    // actor can move onto blank space
+    // TO DO (1) - actor can move onto interactable objects (staircase, idol, weapon, scroll)
+    if (m_level[row][col] == ' ' || m_level[row][col] == '>' || m_level[row][col] == '&')
+        return true;
+    return false;
 }
 
-void Level::set_char(int row, int col, char c)
+Player* Level::createPlayer()
 {
-    m_level[row][col] = c;
+    // if player is created at a wall, then get new player coordinages
+    while (m_level[initialPlayerRow][initialPlayerCol] == '#') {
+        initialPlayerRow = randInt(0, 17);
+        initialPlayerCol = randInt(0, 69);
+    }
     
+    m_player = new Player(m_game, initialPlayerRow, initialPlayerCol);
+    return m_player;
 }
+
+void Level::freePosition(int &row, int &col)        // obtains a free position (not wall, not monster, not object)
+{
+    while (m_level[row][col] != ' ') {
+        row = randInt(0, 17);
+        col = randInt(0, 69);
+    }
+}
+
+bool Level::pickUpObject()
+{
+    // pick up the idol - win game and exit
+    if (m_player->getRowNum() == m_progressionObject->getRow() && m_player->getColNum() == m_progressionObject->getCol() && m_progressionObject->getSymbol() == '&') {
+        cout << endl << "You pick up the golden idol" << endl << "Congratulations, you won!" << endl << "Press q to exit the game.";
+        char quit;
+        while ((quit = getCharacter()) != 'q')
+            {}
+        exit(0);
+        return true;
+    }
+    
+    return false;
+}
+
+

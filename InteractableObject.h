@@ -11,6 +11,7 @@
 
 #include<iostream>
 
+class Game;
 #include "utilities.h"
 
 using namespace std;
@@ -21,11 +22,9 @@ using namespace std;
 class InteractableObject
 {
 public:
-//    InteractableObject();                        // non-parameter constructor for weapons
-    InteractableObject(int row, int col, char c);        // parameter constructor for staircase and idol
-    virtual ~InteractableObject();               // destructor
-    
-    void move(int row, int col);
+    InteractableObject();                                                  // default constructor
+    InteractableObject(int row, int col, char symbol, Game* game);         // progression object constructor (staircase and idol)
+    virtual ~InteractableObject();                                         // destructor
     
     // accessors
     int getRow();
@@ -33,6 +32,7 @@ public:
     char getSymbol();
     
 private:
+    Game* m_game;
     int m_row;
     int m_col;
     char m_symbol;
@@ -44,34 +44,25 @@ private:
 class ProgressionObject : public InteractableObject
 {
 public:
-    ProgressionObject(char c);
+    ProgressionObject(int row, int col, char symbol, Game* game);
     virtual ~ProgressionObject();
 private:
 };
 
-
-// ========== STAIRCASE DECLARATION ==========
 class Staircase : public ProgressionObject
 {
 public:
-    Staircase();
-    virtual ~Staircase();
+    Staircase(int row, int col, char symbol, Game* game);
+    ~Staircase();
 private:
 };
 
-
-// ========== IDOL DECLARATION ==========
 class Idol : public ProgressionObject
 {
 public:
-    Idol();
-    virtual ~Idol();
+    Idol(int row, int col, char symbol, Game* game);
+    ~Idol();
 private:
-    
 };
-
-// =========================================
-// ========== WEAPON DECLARATIONS ==========
-// =========================================
 
 #endif // INTER_OBJ_H

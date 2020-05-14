@@ -20,11 +20,8 @@ using namespace std;
 
 Game::Game(int goblinSmellDistance)     // Game Constructor
 {
-    m_player = new Player(this);
-    m_dungeon = new Dungeon(this);
-    m_dungeon->newLevel();
-    m_dungeon->level()->display();
-        cout << "Dungeon Level: " << m_dungeon->getCurrLevel() << ", Hit points: " << m_player->getHitPoints() << ", Armor: " << m_player->getArmor() << ", Strength: " << m_player->getStrength() << ", Dexterity: " << m_player->getDexterity() << endl << endl;
+    m_dungeon = new Dungeon(this);                     // create dungeon
+    m_player = m_dungeon->level()->createPlayer();     // create player
 }
 
 Player* Game::player()
@@ -40,45 +37,43 @@ Dungeon* Game::dungeon()
 
 void Game::play()
 {
-    cout << "Press q to exit game." << endl;
-    char c;
-    while ((c = getCharacter()) != 'q') {
-        if (c == 'h' && m_player->attemptMove(c) == true) {         // move left
-            m_player->move(m_player->getRowNum(), m_player->getColNum()-1);
-        }
-        if (c == 'l' && m_player->attemptMove(c) == true) {        // move right
-            m_player->move(m_player->getRowNum(), m_player->getColNum()+1);
-        }
-        if (c == 'k' && m_player->attemptMove(c) == true) {        // move up
-            m_player->move(m_player->getRowNum()-1, m_player->getColNum());
-        }
-        if (c == 'j' && m_player->attemptMove(c) == true) {        // move down
-            m_player->move(m_player->getRowNum()+1, m_player->getColNum());
-        }
-        if (c == '>' && m_dungeon->level()->arr_char(m_player->getRowNum(), m_player->getColNum()) == '>')  {     // go down stairway
-            m_dungeon->newLevel();
-        }
-        if (c == 'g' && m_dungeon->level()->arr_char(m_player->getRowNum(), m_player->getColNum()) == '&') {      // pick up idol
-            cout << "You pick up the gold idol" << endl << "Congratulations, you won!" << endl << "Press q to exit game.";
-            char quit;
-            while ((quit = getCharacter()) != 'q')
-                {}
-            return;
-        }
-//        if (c == 'g')
-//            {}
-//        if (getCharacter() == 'w')      // wield weapon and select from inventory
-//            {}
-//        if (getCharacter() == 'r')      // read scroll and select from inventory
-//            {}
-//        if (getCharacter() == 'i')      // see inventory
-//            {}
-//        if (getCharacter() == 'c')      // cheat
-//            {}
+    // string message = ""; //
+    // bool displayPlayerMessage = false;
+    // bool displayComputerMessage = false;
+    
+    do {
+        // TO DO (1) - check board for dead monsters and clear board of dead monsters (destruct monster)
+        // TO DO (1) - 1/10th chance player hitpoints will increase
+        
         clearScreen();
-        m_dungeon->display();
-        // TO DO - call diff functions that cout "dragon attacks and hits" etc.
-    };
+        
+        char userInput;
+        
+        m_dungeon->level()->display();
+        
+        userInput = getCharacter();
+        
+        // player is not asleep
+        if (m_player->getSleepTime() == 0) {
+            if (userInput == 'q')           // quit Game
+                return;
+            if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l')   // player moves or attacks
+                m_player->move(userInput);
+            if (userInput == '>') {                                                             // take staircase
+                if ( m_player->getRowNum() == m_dungeon->level()->progressObj()->getRow() && m_player->getColNum() == m_dungeon->level()->progressObj()->getCol() && m_dungeon->level()->progressObj()->getSymbol() == '>')
+                    m_dungeon->newLevel();
+            }
+            if (userInput == 'g') {                                                             // pick up item (idol, weapon, scroll)
+                m_dungeon->level()->pickUpObject();
+            }
+        }
+        
+        
+        // player is asleep
+        if (m_player->getSleepTime() != 0)
+            m_player->decreaseSleep();
+    }
+    while (m_player->getHitPoints() > 0);
 }
 
 // You will presumably add to this project other .h/.cpp files for the

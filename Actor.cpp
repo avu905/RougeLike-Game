@@ -31,11 +31,25 @@ Actor::Actor(int row, int col, int hitpoints, string weapon, int armorpoints, in
 Actor::~Actor()      // Actor Destructor
 {}
 
-void Actor::move(int row, int col)
+void Actor::move(char direction)
 {
-    m_row = row;
-    m_col = col;
+    if (direction == 'h' && this->game()->dungeon()->level()->validMove(m_row, m_col-1) == true) {    // move left
+        m_col = m_col - 1;
+    }
+    if (direction == 'l' && this->game()->dungeon()->level()->validMove(m_row, m_col+1) == true) {    // move right
+        m_col = m_col + 1;
+    }
+    if (direction == 'k' && this->game()->dungeon()->level()->validMove(m_row-1, m_col) == true) {    // move up
+        m_row = m_row - 1;
+    }
+    if (direction == 'j' && this->game()->dungeon()->level()->validMove(m_row+1, m_col) == true) {    // move down
+        m_row = m_row + 1;
+    }
 }
+
+void Actor::decreaseSleep()
+{m_sleeptime--;}
+
 
 // accessors
 Game* Actor::game()
@@ -54,38 +68,14 @@ int Actor::getDexterity()
     {return m_dexpoints;}
 char Actor::getChar()
     {return m_char;}
-
-
-// =======================================================
-// ============== MONSTER IMPLEMENTATION =================
-// =======================================================
-Monster::Monster(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c)
-: Actor(row, col, hitpoints, weapon, armorpoints, strpoints, dexpoints, sleeptime, game, c)
-{}
-
-Monster::~Monster()
-{}
-
-// =======================================================
-// ============== SNAKEWOMAN IMPLEMENTATION ==============
-// =======================================================
-SnakeWoman::SnakeWoman(Game* game)
-: Monster (randInt(0, 17), randInt(0, 69), SNAKEWOMAN_HIT_POINTS, SNAKEWOMAN_WEAPON, SNAKEWOMAN_ARMOR_POINTS, SNAKEWOMAN_STR_POINTS, SNAKEWOMAN_DEX_POINTS, SNAKEWOMAN_SLEEPTIME, game,'S')
-{}
-
-SnakeWoman::~SnakeWoman()
-{}
-
-bool SnakeWoman::attemptMove(char c)
-{
-    return true;
-}
+int Actor::getSleepTime()
+{return m_sleeptime;}
 
 // ===================================================
 // ============== PLAYER IMPLEMENTATION ==============
 // ===================================================
-Player::Player(Game* game)
-: Actor(randInt(0, 17), randInt(0, 69), 20, "short sword", 2, 2, 2, 0, game, '@')
+Player::Player(Game* game, int initialRow, int initialCol)
+: Actor(initialRow, initialCol, 20, "short sword", 2, 2, 2, 0, game, '@')
 {}
 
 Player::~Player()
@@ -94,13 +84,13 @@ Player::~Player()
 bool Player::attemptMove(char c)
 {
     // can't move in that direction
-    if (c == 'h' && game()->dungeon()->level()->arr_char(getRowNum(), getColNum()-1) == '#')
+    if (c == 'h' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()-1) == '#')
         return false;
-    if (c == 'l' && game()->dungeon()->level()->arr_char(getRowNum(), getColNum()+1) == '#')
+    if (c == 'l' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()+1) == '#')
         return false;
-    if (c == 'j' && game()->dungeon()->level()->arr_char(getRowNum()+1, getColNum()) == '#')
+    if (c == 'j' && game()->dungeon()->level()->getLevelChar(getRowNum()+1, getColNum()) == '#')
         return false;
-    if (c == 'k' && game()->dungeon()->level()->arr_char(getRowNum()-1, getColNum()) == '#')
+    if (c == 'k' && game()->dungeon()->level()->getLevelChar(getRowNum()-1, getColNum()) == '#')
         return false;
     return true;
 }

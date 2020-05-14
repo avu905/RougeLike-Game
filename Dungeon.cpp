@@ -13,7 +13,8 @@
 Dungeon::Dungeon(Game* game)    // Dungeon Constructor
 {
     m_game = game;
-    curr_level = -1;
+    curr_level = 0;
+    level_ptr = new Level(game);
 }
 
 Dungeon::~Dungeon()             // Dungeon Destructor
@@ -21,19 +22,13 @@ Dungeon::~Dungeon()             // Dungeon Destructor
 
 void Dungeon::display()         // calls level's display & keeps track of current level
 {
-    // print level
     level_ptr->display();
-    
-    // print dungeon level and player stats
-    cout << "Dungeon Level: " << curr_level << ", Hit points: " << m_game->player()->getHitPoints() << ", Armor: " << m_game->player()->getArmor() << ", Strength: " << m_game->player()->getStrength() << ", Dexterity: " << m_game->player()->getDexterity() << endl << endl;
 }
 
 void Dungeon::newLevel()
 {
-    if (curr_level != -1)
-        delete level_ptr;
-    
     curr_level++;
+    delete level_ptr;
     level_ptr = new Level(m_game);
 }
 

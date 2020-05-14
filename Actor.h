@@ -31,8 +31,10 @@ public:
     Actor(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
     virtual ~Actor();
 
+    // mutators
+    void decreaseSleep();
     virtual bool attemptMove(char c) = 0;
-    virtual void move(int row, int col);
+    virtual void move(char direction);
     
     // accessors
     Game* game();
@@ -43,6 +45,7 @@ public:
     virtual int getStrength();
     virtual int getDexterity();
     virtual char getChar();
+    virtual int getSleepTime();
     
 private:
     int m_row;          // current row position in level
@@ -65,34 +68,11 @@ private:
 class Player : public Actor
 {
 public:
-    Player(Game* game);
+    Player(Game* game, int initialRow, int initialCol);
     ~Player();
     virtual bool attemptMove(char c);
 private:
     // vector<GameObjects*> m_inventory (26) 
-};
-
-// ====================================================
-// ============= MONSTER DECLARATION ==================
-// ====================================================
-class Monster : public Actor
-{
-public:
-    Monster(int row, int col, int hitpoints, string weapon, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
-    virtual ~Monster();
-    
-private:
-    // Weapon* m_weapon;
-};
-
-// ============== SNAKEWOMAN DECLARATION ==============
-class SnakeWoman : public Monster
-{
-public:
-    SnakeWoman(Game* game);
-    ~SnakeWoman();
-    virtual bool attemptMove(char c);
-private:
 };
 
 #endif // ACTOR_H
