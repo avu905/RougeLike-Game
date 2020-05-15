@@ -96,7 +96,7 @@ Player::Player(Game* game, int initialRow, int initialCol)
     int initialWeaponRow = 0;       // placed on a wall so technically not on level so can't pick up initial weapon at (0,0)
     int initialWeaponCol = 0;       // placed on a wall so technically not on level so can't pick up initial weapon at (0,0)
     m_inventory.push_back(new Shortsword(initialWeaponRow, initialWeaponCol, ')', game, "short sword", "slashes", 0, 2));
-    // player initial holds a short sword
+    // player initially holds a short sword
     holdInitialObject(m_inventory[0]);
 }
 

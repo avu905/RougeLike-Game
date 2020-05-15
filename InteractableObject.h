@@ -65,6 +65,8 @@ public:
     Weapon();       // constructor for weapon
     Weapon(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount); // constructor for weapons put into level
     virtual ~Weapon();
+    string getName();
+    
 private:
     string m_name;
     string m_action;
@@ -119,6 +121,7 @@ class Scroll : public InteractableObject
 public:
     Scroll(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance);
     virtual ~Scroll();
+    string getName();
 private:
     string m_name;
     string m_action;

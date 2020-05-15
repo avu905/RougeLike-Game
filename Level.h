@@ -28,12 +28,12 @@ public:
     ~Level();                               // Level Destructor
     
     // non-accessors
-    void display();                         // display the level
-    bool validMove(int row, int col);       // check if actor can move to that position
-    Player* createPlayer();                 // create a new player and return a pointer to the player
-    void freePosition(int &row, int &col);  // set to free position on m_level
-    bool pickUpObject();                    // pick up idol, scroll, or weapon
-    void addInteractableObject(int objectType);           // create/dynamically allocate a new interactable object (weapon/scroll) and place in the level
+    void display();                                        // display the level
+    bool validMove(int row, int col);                      // check if actor can move to that position
+    Player* createPlayer();                                // create a new player and return a pointer to the player
+    void freePosition(int &row, int &col);                 // set to free position on m_level
+    bool pickUpObject(string& MessageToPrint);             // pick up idol, scroll, or weapon
+    void addInteractableObject(int objectType);            // create/dynamically allocate a new interactable object (weapon/scroll) and place in the level
     
     // accessors
     char getLevelChar(int row, int col) {return m_level[row][col];}

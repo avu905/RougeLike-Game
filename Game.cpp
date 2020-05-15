@@ -41,19 +41,34 @@ void Game::play()
     // bool displayPlayerMessage = false;
     // bool displayComputerMessage = false;
     
+    string MessageToPrint = "";     // this sting will be modified and added to depending on what each actor (player/monster) does
+    bool playerMessage = false;
+    bool computerMessage = false;
+    
     do {
         // TO DO (1) - check board for dead monsters and clear board of dead monsters (destruct monster)
-        // TO DO (1) - 1/10th chance player hitpoints will increase
+        // TO DO (1) - HEAL 1/10th chance player hitpoints will increase
         
         // TO DO (1) - newlines print out correctly and that there is not a newline before the grid is displayed
         clearScreen();
         
-        char userInput;
-        
+        // display the dungeon
         m_dungeon->level()->display();
         
-        userInput = getCharacter();
+        // print message after player or monster does something
+        if (playerMessage == true) {             // print message when player does something
+            cout << MessageToPrint << endl;
+            playerMessage = false;
+        }
+        else if (computerMessage == true) {       // print message when computer/monsters do something
+            cout << MessageToPrint << endl;
+            computerMessage = false;
+        }
+        // after printing message, reset the part of the message that needs to be printed
+        MessageToPrint = "";
         
+        char userInput;
+        userInput = getCharacter();
         // player is not asleep
         if (m_player->getSleepTime() == 0) {
             if (userInput == 'q')           // quit Game
@@ -65,13 +80,18 @@ void Game::play()
                     m_dungeon->newLevel();
             }
             if (userInput == 'g') {                                                             // pick up item (idol, weapon, scroll)
-                m_dungeon->level()->pickUpObject();
+                 playerMessage = m_dungeon->level()->pickUpObject(MessageToPrint);
+            }
+            if (userInput == 'i') {
+                
             }
         }
         
         // player is asleep
         if (m_player->getSleepTime() != 0)
             m_player->decreaseSleep();
+        
+        // TO DO (1) - move the monsters only after the player has moved
     }
     while (m_player->getHitPoints() > 0);
 }

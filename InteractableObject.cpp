@@ -25,10 +25,8 @@ InteractableObject::~InteractableObject()
 
 int InteractableObject::getRow()
     {return m_row;}
-
 int InteractableObject::getCol()
     {return m_col;}
-
 char InteractableObject::getSymbol()
     {return m_symbol;}
 
@@ -45,6 +43,8 @@ Weapon::Weapon(int row, int col, char symbol, Game* game, string name, string ac
 }
 Weapon::~Weapon()
 {}
+string Weapon::getName()
+    {return m_name;}
 
 Shortsword::Shortsword(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
 : Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
@@ -92,10 +92,11 @@ Scroll::Scroll(int row, int col, char symbol, Game* game, string name, string ac
     m_action = action;
     m_scrollType = scrollType;
     m_enhance = enhance;
-    
 }
 Scroll::~Scroll()
 {}
+string Scroll::getName()
+    {return m_name;}
 
 ScrollOfTeleportation::ScrollOfTeleportation(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
 : Scroll(row, col, symbol, game, name, action, scrollType, enhance)

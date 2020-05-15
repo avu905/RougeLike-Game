@@ -31,7 +31,7 @@ public:
     Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object);
     virtual ~Actor();
 
-    // mutators
+    // non-accessors
     void decreaseSleep();
     virtual bool attemptMove(char c) = 0;
     virtual void move(char direction);
