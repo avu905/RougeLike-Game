@@ -69,7 +69,6 @@ void Game::play()
             }
         }
         
-        
         // player is asleep
         if (m_player->getSleepTime() != 0)
             m_player->decreaseSleep();

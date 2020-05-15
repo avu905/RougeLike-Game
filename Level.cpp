@@ -9,11 +9,12 @@
 #include "Actor.h"
 #include "InteractableObject.h"
 #include "Level.h"
+//#include <vector>
 
 Level::Level(Game* game)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
-    // TO DO - write algorithm to populate levels with random walls and rooms
+    // TO DO (1) - write algorithm to populate levels with random walls and rooms
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
             m_level[i][j] = ' ';
@@ -34,8 +35,23 @@ Level::Level(Game* game)        // Level Constructor
         m_level[k][7] = '#';
     }
     
-    // TO DO - put weapon and scroll objects in level
-    // TO DO - put monsters in level
+    // TO DO (1) - put weapon and scroll objects in level
+    int numObjectsInLevel = randInt(2, 3);
+    // loop and
+    for (int i = 0; i < numObjectsInLevel; i++) {
+        // only make short sword, mace, long sword - only make scroll armor, health, strength, dexterity
+        int weaponOrScroll = randInt(1, 2);
+        if (weaponOrScroll == 1) {
+            int weaponType = randInt(1, 3);
+            addInteractableObject(weaponType);
+        }
+        else if (weaponOrScroll == 2) {
+            int scrollType = randInt(4, 7);
+            addInteractableObject(scrollType);
+        }
+    }
+    
+    // TO DO (1) - put monsters in level
     
     // TO DO - put idol or staircase in level
     int progressionObjectRow = randInt(0, 17);
@@ -65,12 +81,15 @@ void Level::display()
     // TO DO (1) - populate m_level with only walls and interactable objects (not including staircases and golden idol)
     for (int row = 0; row < 18; row++) {
         for (int col = 0; col < 70; col++) {
-            if (m_level[row][col] != '#')
+            if (m_level[row][col] != '#' && m_level[row][col] != '&' && m_level[row][col] != ')')
                 m_level[row][col] = ' ';
         }
     }
     
-    // TO DO (1) - put objects into m_level
+    // put objects into m_level
+    for (int i = 0; i < m_objects.size(); i++) {
+        m_level[m_objects[i]->getRow()][m_objects[i]->getCol()] = m_objects[i]->getSymbol();
+    }
     
     // put progression object onto level
     if (m_game->dungeon()->getCurrLevel() != 4)
@@ -84,8 +103,7 @@ void Level::display()
     if (m_level[m_player->getRowNum()][m_player->getColNum()] != '#')
         m_level[m_player->getRowNum()][m_player->getColNum()] = m_player->getChar();
     
-    
-    // print out level
+    // print out m_level
     for (int row = 0; row < 18; row++) {
         for (int col = 0; col < 70; col++) {
             cout << m_level[row][col];
@@ -99,10 +117,12 @@ void Level::display()
 
 bool Level::validMove(int row, int col)
 {
-    // actor can move onto blank space
-    // TO DO (1) - actor can move onto interactable objects (staircase, idol, weapon, scroll)
-    if (m_level[row][col] == ' ' || m_level[row][col] == '>' || m_level[row][col] == '&')
+    // TO DO (1) - actors cannot move onto other actors
+    
+    // actor can move onto blank space or object
+    if (m_level[row][col] == ' ' || m_level[row][col] == '>' || m_level[row][col] == '&' || m_level[row][col] == ')' || m_level[row][col] == '?')
         return true;
+    
     return false;
 }
 
@@ -138,7 +158,44 @@ bool Level::pickUpObject()
         return true;
     }
     
+    if (m_player->getInventorySize() < 25) {
+        for (int i = 0; i < m_objects.size(); i++) {
+            if (m_player->getRowNum() == m_objects[i]->getRow() && m_player->getColNum() == m_objects[i]->getCol()) {
+                // TO DO (1) - update print out message where I say what I picked up
+                m_player->addObjectToInventory(m_objects[i]);       // add object to player's m_inventory
+                m_objects.erase(m_objects.begin()+i);               // erase object from levels m_objects vector (level no longer has access to that object)
+            }
+        }
+    }
+    else {
+        // TO DO (1) - your knapsack is full; you can't pick up that item
+    }
+        
+    
     return false;
 }
 
+void Level::addInteractableObject(int objectType)
+{
+    // position of object to put into level
+    int objectRow = randInt(0, 18);
+    int objectCol = randInt(0, 69);
+    freePosition(objectRow, objectCol);
+    
+    // depending on object type passed in (ie the int objectType), the corresponding object will be created
+    if (objectType == 1)
+        m_objects.push_back(new Shortsword(objectRow, objectCol, ')', m_game, "short sword", "slashes", 0, 2));
+    else if (objectType == 2)
+        m_objects.push_back(new Mace(objectRow, objectCol, ')', m_game, "mace", "swings", 0, 2));
+    else if (objectType == 3)
+        m_objects.push_back(new LongSword(objectRow, objectCol, ')', m_game, "long sword", "swings", 2, 4));
+    else if (objectType == 4)
+        m_objects.push_back(new ScrollOfImproveArmor(objectRow, objectCol, '?', m_game, "scroll of enhance armor", "Your armor glows blue.", 'A', randInt(1, 3)));
+    else if (objectType == 5)
+        m_objects.push_back(new ScrollOfEnhanceHealth(objectRow, objectCol, '?', m_game, "scroll of enhance health", "You feel your heart beating stronger.", 'H', randInt(3, 8)));
+    else if (objectType == 6)
+        m_objects.push_back(new ScrollOfRaiseStrength(objectRow, objectCol, '?', m_game, "scroll of strength", "Your muscles bulge.", 'S', randInt(1, 3)));
+    else if (objectType == 7)
+        m_objects.push_back(new ScrollOfEnhanceDexterity(objectRow, objectCol, '?', m_game, "scroll of enhance dexterity", "You feel like less of a klutz.", 'D', 1));
+}
 

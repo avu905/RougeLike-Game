@@ -13,7 +13,7 @@
 // ========================================================
 // ========== INTERACTABLE OBJECT IMPLEMENTATION ==========
 // ========================================================
-InteractableObject::InteractableObject()                    // default constructor
+InteractableObject::InteractableObject()                                            // default constructor
 {}
 
 InteractableObject::InteractableObject(int row, int col, char symbol, Game* game)   // progression object constructor
@@ -43,35 +43,89 @@ Weapon::Weapon(int row, int col, char symbol, Game* game, string name, string ac
     m_dexterityBonus = dexterityBonus;
     m_damageAmount = damageAmount;
 }
-
 Weapon::~Weapon()
 {}
 
 Shortsword::Shortsword(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
 : Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
 {}
-
 Shortsword::~Shortsword()
 {}
 
-// FOR LEVEL CONSTRUCTOR
-// 2 or 3 scrolls or weapons are put on each level
-// NEVER put on level - must kill monster to obtain one
-// magic fangs of sleep
-// magic axes
-// teleportation scrolls
+Mace::Mace(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
+: Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
+{}
+Mace::~Mace()
+{}
 
+LongSword::LongSword(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
+: Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
+{}
+LongSword::~LongSword()
+{}
+
+MagicAxe::MagicAxe(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
+: Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
+{}
+MagicAxe::~MagicAxe()
+{}
+
+MagicFangsOfSleep::MagicFangsOfSleep(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
+: Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)
+{}
+MagicFangsOfSleep::~MagicFangsOfSleep()
+{}
 
 // =======================================================
 // ========== SCROLL IMPLEMENTATION ======================
 // =======================================================
-
 // SCROLLS - shown as ?
     // scroll of teleportation
     // scroll of improve armor
     // scroll of raise strength
     // scroll of enhance health
     // scroll of enhance dexterity
+Scroll::Scroll(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
+: InteractableObject(row, col, symbol, game)
+{
+    m_name = name;
+    m_action = action;
+    m_scrollType = scrollType;
+    m_enhance = enhance;
+    
+}
+Scroll::~Scroll()
+{}
+
+ScrollOfTeleportation::ScrollOfTeleportation(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
+: Scroll(row, col, symbol, game, name, action, scrollType, enhance)
+{}
+ScrollOfTeleportation::~ScrollOfTeleportation()
+{}
+
+ScrollOfImproveArmor::ScrollOfImproveArmor(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
+: Scroll(row, col, symbol, game, name, action, scrollType, enhance)
+{}
+ScrollOfImproveArmor::~ScrollOfImproveArmor()
+{}
+
+ScrollOfRaiseStrength::ScrollOfRaiseStrength(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
+: Scroll(row, col, symbol, game, name, action, scrollType, enhance)
+{}
+ScrollOfRaiseStrength::~ScrollOfRaiseStrength()
+{}
+
+ScrollOfEnhanceHealth::ScrollOfEnhanceHealth(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
+: Scroll(row, col, symbol, game, name, action, scrollType, enhance)
+{}
+ScrollOfEnhanceHealth::~ScrollOfEnhanceHealth()
+{}
+
+ScrollOfEnhanceDexterity::ScrollOfEnhanceDexterity(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
+: Scroll(row, col, symbol, game, name, action, scrollType, enhance)
+{}
+ScrollOfEnhanceDexterity::~ScrollOfEnhanceDexterity()
+{}
 
 // =======================================================
 // ========== PROGRESSION OBJECT IMPLEMENTATION ==========

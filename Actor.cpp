@@ -95,7 +95,7 @@ Player::Player(Game* game, int initialRow, int initialCol)
     // short sword added to m_inventory at index [0]
     int initialWeaponRow = 0;       // placed on a wall so technically not on level so can't pick up initial weapon at (0,0)
     int initialWeaponCol = 0;       // placed on a wall so technically not on level so can't pick up initial weapon at (0,0)
-    m_inventory.push_back(new Shortsword(initialWeaponRow, initialWeaponCol, ')', game, "Short sword", "slashes", 0, 2));
+    m_inventory.push_back(new Shortsword(initialWeaponRow, initialWeaponCol, ')', game, "short sword", "slashes", 0, 2));
     // player initial holds a short sword
     holdInitialObject(m_inventory[0]);
 }
@@ -117,7 +117,13 @@ bool Player::attemptMove(char c)
     return true;
 }
 
+int Player::getInventorySize()
+    {return m_inventory.size();}
 
+void Player::addObjectToInventory(InteractableObject* objectToAdd)
+{
+    m_inventory.push_back(objectToAdd);
+}
 
 
 
