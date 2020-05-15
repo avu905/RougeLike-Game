@@ -108,7 +108,7 @@ bool Level::validMove(int row, int col)
 
 Player* Level::createPlayer()
 {
-    // if player is created at a wall, then get new player coordinages
+    // if player is created at a wall, then get new player coordinates
     while (m_level[initialPlayerRow][initialPlayerCol] == '#') {
         initialPlayerRow = randInt(0, 17);
         initialPlayerCol = randInt(0, 69);

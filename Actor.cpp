@@ -13,7 +13,7 @@
 // ===================================================
 // ============== ACTOR IMPLEMENTATION ===============
 // ===================================================
-Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c)
+Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object)
 {
     // Set initial values for actor
     m_row = row;
@@ -32,6 +32,8 @@ Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int 
     m_maxStrpoints = 99;
     m_maxDexpoints = 99;
     m_maxSleeptime = 0;
+    
+    m_initialObject = object; 
 }
 
 Actor::~Actor()      // Actor Destructor
@@ -55,6 +57,11 @@ void Actor::move(char direction)
 
 void Actor::decreaseSleep()
 {m_sleeptime--;}
+
+void Actor::holdInitialObject(InteractableObject* object)
+{
+    m_initialObject = object;
+}
 
 
 // accessors
@@ -83,8 +90,15 @@ int Actor::getSleepTime()
 // ============== PLAYER IMPLEMENTATION ==============
 // ===================================================
 Player::Player(Game* game, int initialRow, int initialCol)
-: Actor(initialRow, initialCol, 20, "Player", 2, 2, 2, 0, game, '@')
-{}
+: Actor(initialRow, initialCol, 20, "Player", 2, 2, 2, 0, game, '@', nullptr)
+{
+    // short sword added to m_inventory at index [0]
+    int initialWeaponRow = 0;       // placed on a wall so technically not on level so can't pick up initial weapon at (0,0)
+    int initialWeaponCol = 0;       // placed on a wall so technically not on level so can't pick up initial weapon at (0,0)
+    m_inventory.push_back(new Shortsword(initialWeaponRow, initialWeaponCol, ')', game, "Short sword", "slashes", 0, 2));
+    // player initial holds a short sword
+    holdInitialObject(m_inventory[0]);
+}
 
 Player::~Player()
 {}

@@ -28,13 +28,14 @@ using namespace std;
 class Actor
 {
 public:
-    Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c);
+    Actor(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object);
     virtual ~Actor();
 
     // mutators
     void decreaseSleep();
     virtual bool attemptMove(char c) = 0;
     virtual void move(char direction);
+    virtual void holdInitialObject(InteractableObject* object);
     
     // accessors
     Game* game();
@@ -64,6 +65,8 @@ private:
     int m_maxSleeptime;
     char m_char;        // actor represented by char
     Game* m_game;       // pointer to game
+    
+    InteractableObject* m_initialObject;       // pointer to weapon that each actor initially holds (only changes for player, not monster)
 };
 
 // ================================================

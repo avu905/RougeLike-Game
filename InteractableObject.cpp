@@ -54,8 +54,6 @@ Shortsword::Shortsword(int row, int col, char symbol, Game* game, string name, s
 Shortsword::~Shortsword()
 {}
 
-
-
 // FOR LEVEL CONSTRUCTOR
 // 2 or 3 scrolls or weapons are put on each level
 // NEVER put on level - must kill monster to obtain one

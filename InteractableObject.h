@@ -49,10 +49,24 @@ private:
     // magic axes - dex = 5; damage = 5
     // magic fangs of sleep - dex = 3; damage = 2; 1/5 chance puts defender to sleep for X 2-6 turns if awake; if asleep (sleeptime = Y) then defender's sleep time is max of X and Y
 
+    // 2 or 3 scrolls or weapons are put on each level
+        // short sword
+        // mace
+        // long sword
+        // NOT magic fangs of sleep
+        // NOT magic axes
+        // NOT teleportation scrolls
+        // scroll of improve armor
+        // scroll of raise strength
+        // scroll of enhance health
+        // scroll of enhance dexterity
+
+
 class Weapon : public InteractableObject
 {
 public:
-    Weapon(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount);
+    Weapon();       // constructor for weapon
+    Weapon(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount); // constructor for weapons put into level
     virtual ~Weapon();
 private:
     string m_name;
@@ -68,6 +82,14 @@ public:
     virtual ~Shortsword();
 private:
 };
+
+
+
+
+
+
+
+
 
 // =======================================================
 // ========== SCROLL DECLARATION =========================
