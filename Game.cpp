@@ -83,7 +83,7 @@ void Game::play()
                  playerMessage = m_dungeon->level()->pickUpObject(MessageToPrint);
             }
             if (userInput == 'i') {
-                
+                m_player->displayInventory();
             }
         }
         

@@ -79,8 +79,12 @@ public:
     Player(Game* game, int initialRow, int initialCol);
     ~Player();
     virtual bool attemptMove(char c);
-    int getInventorySize();
     void addObjectToInventory(InteractableObject* objectToAdd);
+    void displayInventory();
+    
+    // accessors
+    int getInventorySize();
+    string inventoryObjectNameAtIndex(int objectIndex);
 private:
     vector<InteractableObject*> m_inventory;
 };

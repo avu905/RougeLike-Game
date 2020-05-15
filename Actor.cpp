@@ -8,6 +8,7 @@
 
 #include "Actor.h"
 #include "globals.h"
+#include "utilities.h"
 
 
 // ===================================================
@@ -125,5 +126,34 @@ void Player::addObjectToInventory(InteractableObject* objectToAdd)
     m_inventory.push_back(objectToAdd);
 }
 
+void Player::displayInventory()
+{
+    // clear screen before writing out inventory
+    clearScreen();
+    
+    cout << "Inventory: " << endl;
+    
+    char alphabetCharacter = 'a';
+    for (int i = 0; i < m_inventory.size(); i++) {
+        cout << " " << alphabetCharacter << ". ";
+        if (m_inventory[i]->getSymbol() == '?')
+            cout << "A scroll called ";
+        cout << this->inventoryObjectNameAtIndex(i) << endl;
+        alphabetCharacter++;
+    }
+    getCharacter();
+}
 
-
+string Player::inventoryObjectNameAtIndex(int objectIndex)
+{
+    string objectName = "";
+    if (m_inventory[objectIndex]->getSymbol() == ')') {
+        Weapon* weaponPointer = dynamic_cast<Weapon*>(m_inventory[objectIndex]);
+        objectName = weaponPointer->getName();
+    }
+    else if (m_inventory[objectIndex]->getSymbol() == '?') {
+        Scroll* scrollPointer = dynamic_cast<Scroll*>(m_inventory[objectIndex]);
+        objectName = scrollPointer->getName();
+    }
+    return objectName;
+}
