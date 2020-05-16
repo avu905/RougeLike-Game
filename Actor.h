@@ -33,7 +33,8 @@ public:
 
     // non-accessors
     void decreaseSleep();
-    virtual bool attemptMove(char c) = 0;
+    // TO DO (1) - possibly delete attemptMove(char c)
+    // virtual bool attemptMove(char c) = 0;
     virtual void move(char direction);
     virtual void holdInitialObject(InteractableObject* object);
     virtual void increaseArmorPoints (int increase);
@@ -80,6 +81,25 @@ private:
 };
 
 // ================================================
+// ============== MONSTER DECLARATION =============
+// ================================================
+class Monster : public Actor
+{
+public:
+    Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object);
+    virtual ~Monster();
+private:
+};
+
+class BogeyMen : public Monster
+{
+public:
+    BogeyMen(Game* game, int initialRow, int initialCol);
+    ~BogeyMen();
+private:
+};
+
+// ================================================
 // ============== PLAYER DECLARATION ==============
 // ================================================
 
@@ -88,7 +108,8 @@ class Player : public Actor
 public:
     Player(Game* game, int initialRow, int initialCol);
     ~Player();
-    virtual bool attemptMove(char c);
+    // TO DO (1) - possibly delete attemptMove(char c)
+    // virtual bool attemptMove(char c);
     void addObjectToInventory(InteractableObject* objectToAdd);
     void displayInventory();
     bool wieldWeapon(string& MessageToPrint);

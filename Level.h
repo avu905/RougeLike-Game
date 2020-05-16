@@ -27,6 +27,10 @@ public:
     Level(Game* game);                      // Level Constructor
     ~Level();                               // Level Destructor
     
+    // accessors
+    char getLevelChar(int row, int col) {return m_level[row][col];}
+    InteractableObject* progressObj() {return m_progressionObject;}
+    
     // non-accessors
     void display();                                        // display the level
     bool validMove(int row, int col);                      // check if actor can move to that position
@@ -34,10 +38,7 @@ public:
     void freePosition(int &row, int &col);                 // set to free position on m_level
     bool pickUpObject(string& MessageToPrint);             // pick up idol, scroll, or weapon
     void addInteractableObject(int objectType);            // create/dynamically allocate a new interactable object (weapon/scroll) and place in the level
-    
-    // accessors
-    char getLevelChar(int row, int col) {return m_level[row][col];}
-    InteractableObject* progressObj() {return m_progressionObject;}
+    void addMonster(int monsterType);
     
 private:
     char m_level[18][70];                           // level layout
@@ -50,10 +51,7 @@ private:
     ProgressionObject* m_progressionObject;         // pointer to staircase or idol
     vector<InteractableObject*> m_objects;          // vector of pointers to objects (weapons or scrolls) on level
     
-    vector<Monster*> m_monsters;
-    //int maxMonsters = randInt(2, 5*(m_game->dungeon()->getCurrLevel()+1)+1);
-    // each level will have its own monsters
-    // each level will have its own scrolls/weapons/items
+    vector<Monster*> m_monsters;                    // vector of pointers to monsters on level
 };
 
 #endif // LEVEL_H

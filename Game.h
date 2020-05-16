@@ -28,11 +28,11 @@ public:
     void play();
     
     // accessors
-    Dungeon* dungeon();
-    Player* player();
+    Dungeon* dungeon();                     // access dungeon
+    Player* player();                       // access player
 private:
-    Dungeon* m_dungeon;
-    Player* m_player;
+    Dungeon* m_dungeon;                     // pointer to dungeon
+    Player* m_player;                       // pointer to player
 };
 
 #endif // GAME_INCLUDED

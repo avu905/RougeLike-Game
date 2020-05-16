@@ -24,17 +24,18 @@ public:
     Dungeon(Game* game);        // Dungeon Constructor
     ~Dungeon();                 // Dungeon Destructor
         
-    void display();
-    void newLevel();
+    // non-accessors
+    void display();             // display the level
+    void newLevel();            // create a new level
     
     // accessors
-    Level* level();
-    int getCurrLevel();
+    Level* level();             // access pointer to current level
+    int getCurrLevel();         // access current level player is on
     
 private:
-    Level* level_ptr;
-    Game* m_game;
-    int curr_level;
+    Level* level_ptr;           // pointer to current level
+    Game* m_game;               // pointer to game
+    int curr_level;             // current level player is on
 };
 
 #endif // DUNGEON_H

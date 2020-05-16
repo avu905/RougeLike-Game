@@ -76,8 +76,10 @@ void Game::play()
         if (m_player->getSleepTime() == 0) {
             if (userInput == 'q')           // quit Game
                 return;
-            if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l')   // player moves or attacks
+            if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l') { // player moves or attacks
                 m_player->move(userInput);
+                playerMessage = true;
+            }
             if (userInput == '>') {                                                             // take staircase
                 if ( m_player->getRowNum() == m_dungeon->level()->progressObj()->getRow() && m_player->getColNum() == m_dungeon->level()->progressObj()->getCol() && m_dungeon->level()->progressObj()->getSymbol() == '>')
                     m_dungeon->newLevel();
@@ -90,7 +92,6 @@ void Game::play()
             }
             if (userInput == 'w') {                                                             // wield weapon
                 playerMessage = m_player->wieldWeapon(MessageToPrint);
-                
             }
             if (userInput == 'r') {                                                             // read scroll
                 playerMessage = m_player->readScroll(MessageToPrint);
@@ -105,8 +106,19 @@ void Game::play()
             m_player->decreaseSleep();
         
         // TO DO (1) - move the monsters only after the player has moved
+                // TO DO (1) - move the monsters
+                // TO DO (1) - update computer message if there is a message to be printed out
+        // TO DO (1) - finish implementing this ==> computerMessage = m_dungeon->level()->moveMonsters();
+        
+        
     }
     while (m_player->getHitPoints() > 0);
+    
+    
+    // TO DO (1) - when player dies print out appropriate message
+        // TO DO (1) - printout player has died
+        // TO DO (1) -
+    
 }
 
 // You will presumably add to this project other .h/.cpp files for the

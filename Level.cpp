@@ -37,7 +37,6 @@ Level::Level(Game* game)        // Level Constructor
     
     // put weapon and scroll objects in level
     int numObjectsInLevel = randInt(2, 3);
-    // loop and
     for (int i = 0; i < numObjectsInLevel; i++) {
         // only make short sword, mace, long sword - only make scroll armor, health, strength, dexterity
         int weaponOrScroll = randInt(1, 2);
@@ -52,6 +51,35 @@ Level::Level(Game* game)        // Level Constructor
     }
     
     // TO DO (1) - put monsters in level
+    int numMonstersInLevel = randInt(2, 5 * (m_game->dungeon()->getCurrLevel() + 1) + 1);
+    for (int monstersAdded = 0; monstersAdded < numMonstersInLevel; monstersAdded++) {
+        
+        int currentLevel = m_game->dungeon()->getCurrLevel();
+        
+        if (currentLevel == 0 || currentLevel == 1) {        // goblins, snakewomen
+            // TO DO (1) - change to create goblins and snakewomen, only creates bogeymen right now
+            // addMonster(randInt(0, 1));
+        }
+        else if (currentLevel == 2) {                        // bogeymen, goblins, snakewomen
+            // TO DO (1) - change to create goblins and snakewomen, only creates bogeymen right now
+            addMonster(0); // TO DO (1) - eventually delte this line
+            //addMonster(randInt(0, 2));
+            
+        }
+        else if (currentLevel == 3 || currentLevel == 4) {   // dragons, bogeymen, goblins, snakewomen
+            // TO DO (1) - change to create dragons, goblins, and snakewomen, only creates bogeymen right now
+            // addMonster(randInt(0, 3));
+            addMonster(0); // TO DO (1) - eventually delete this line
+            
+        }
+        // snake woman - all levels
+        // bogey man - level 2 or deeper
+        // dragon - level 3 or deeper
+        // goblin - all levels
+    }
+    
+    
+    
     
     // put idol or staircase in level
     int progressionObjectRow = randInt(0, 17);
@@ -98,6 +126,9 @@ void Level::display()
         m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] = '&';
     
     // TO DO (1) - put monsters into m_level
+    for (int i = 0; i < m_monsters.size(); i++) {
+        m_level[m_monsters[i]->getRowNum()][m_monsters[i]->getColNum()] = m_monsters[i]->getChar() ;
+    }
     
     // put player onto m_level
     if (m_level[m_player->getRowNum()][m_player->getColNum()] != '#')
@@ -211,3 +242,21 @@ void Level::addInteractableObject(int objectType)
         m_objects.push_back(new ScrollOfEnhanceDexterity(objectRow, objectCol, '?', m_game, "scroll of enhance dexterity", "You feel like less of a klutz.", 'D', 1));
 }
 
+void Level::addMonster(int monsterType)
+{
+    int initialMonsterRow = randInt(0, 17);
+    int initialMonsterCol = randInt(0, 69);
+    freePosition(initialMonsterRow, initialMonsterCol);
+    if (monsterType == 0) {
+        m_monsters.push_back(new BogeyMen(m_game, initialMonsterRow, initialMonsterCol));
+    }
+    else if (monsterType == 1) {
+        // make snakewoemn
+    }
+    else if (monsterType == 2) {
+        // make dragon
+    }
+    else if (monsterType == 3) {
+        // make goblin
+    }
+}

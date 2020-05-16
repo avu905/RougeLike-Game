@@ -7,7 +7,7 @@
 //
 
 #include "Actor.h"
-#include "globals.h"
+//#include "globals.h"
 #include "utilities.h"
 
 
@@ -128,6 +128,29 @@ int Actor::getSleepTime()
 {return m_sleeptime;}
 
 // ===================================================
+// ============== MONSTER IMPLEMENTATION =============
+// ===================================================
+Monster::Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object)
+: Actor(row, col, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, c, object)
+{
+    
+}
+
+Monster::~Monster()
+{}
+
+BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
+: Monster(initialRow, initialCol, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, 'B', new Shortsword(0, 0, 'A', game, "short sword", "slashes", 0, 2))
+{
+    // create specific weapon
+}
+
+BogeyMen::~BogeyMen()
+{}
+
+
+
+// ===================================================
 // ============== PLAYER IMPLEMENTATION ==============
 // ===================================================
 Player::Player(Game* game, int initialRow, int initialCol)
@@ -146,19 +169,20 @@ Player::~Player()
     // TO DO (1) - delete objects in player's inventory
 }
 
-bool Player::attemptMove(char c)
-{
-    // can't move in that direction
-    if (c == 'h' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()-1) == '#')
-        return false;
-    if (c == 'l' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()+1) == '#')
-        return false;
-    if (c == 'j' && game()->dungeon()->level()->getLevelChar(getRowNum()+1, getColNum()) == '#')
-        return false;
-    if (c == 'k' && game()->dungeon()->level()->getLevelChar(getRowNum()-1, getColNum()) == '#')
-        return false;
-    return true;
-}
+// TO DO (1) - possibly delete attemptMove(char c)
+//bool Player::attemptMove(char c)
+//{
+//    // can't move in that direction
+//    if (c == 'h' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()-1) == '#')
+//        return false;
+//    if (c == 'l' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()+1) == '#')
+//        return false;
+//    if (c == 'j' && game()->dungeon()->level()->getLevelChar(getRowNum()+1, getColNum()) == '#')
+//        return false;
+//    if (c == 'k' && game()->dungeon()->level()->getLevelChar(getRowNum()-1, getColNum()) == '#')
+//        return false;
+//    return true;
+//}
 
 int Player::getInventorySize()
     {return m_inventory.size();}
