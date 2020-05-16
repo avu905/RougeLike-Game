@@ -64,7 +64,6 @@ void Actor::holdInitialObject(InteractableObject* object)
     m_initialObject = object;
 }
 
-
 // accessors
 Game* Actor::game()
     {return m_game;}
@@ -102,7 +101,9 @@ Player::Player(Game* game, int initialRow, int initialCol)
 }
 
 Player::~Player()
-{}
+{
+    // TO DO (1) - delete objects in player's inventory
+}
 
 bool Player::attemptMove(char c)
 {
@@ -156,4 +157,38 @@ string Player::inventoryObjectNameAtIndex(int objectIndex)
         objectName = scrollPointer->getName();
     }
     return objectName;
+}
+
+bool Player::wieldWeapon(string& MessageToPrint)
+{
+    // clear screen and print inventory
+    clearScreen();
+    cout << "Inventory: " << endl;
+    char alphabetCharacter = 'a';
+    for (int i = 0; i < m_inventory.size(); i++) {
+        cout << " " << alphabetCharacter << ". ";
+        if (m_inventory[i]->getSymbol() == '?')
+            cout << "A scroll called ";
+        cout << this->inventoryObjectNameAtIndex(i) << endl;
+        alphabetCharacter++;
+    }
+    
+    // inputs a character signifying which weapon they want to wield
+    char weaponToWield = getCharacter();
+    
+    // user did not input a valid character (inputted a non-alphabet character and or a letter that doesn't correspond to an object in the inventory)
+    if (!(weaponToWield - 'a' >= 0 && weaponToWield - 'a' <= m_inventory.size() - 1))
+        return false;
+    
+    // if the inputted character refers to a weapon or not
+    Weapon* validWeapon = dynamic_cast<Weapon*>(m_inventory[weaponToWield-'a']);
+    
+    if (validWeapon != nullptr ) {
+        this->holdInitialObject(validWeapon);
+        MessageToPrint = "You are wielding " + this->inventoryObjectNameAtIndex(weaponToWield - 'a');
+    }
+    else if (validWeapon == nullptr) {
+        MessageToPrint = "You can't wield " + this->inventoryObjectNameAtIndex(weaponToWield - 'a');
+    }
+    return true;
 }

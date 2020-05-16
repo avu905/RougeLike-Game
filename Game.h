@@ -23,7 +23,8 @@ using namespace std;
 class Game
 {
 public:
-    Game(int goblinSmellDistance);
+    Game(int goblinSmellDistance);          // Game constructor
+    ~Game();                                // Game destructor
     void play();
     
     // accessors

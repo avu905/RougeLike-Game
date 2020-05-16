@@ -24,6 +24,12 @@ Game::Game(int goblinSmellDistance)     // Game Constructor
     m_player = m_dungeon->level()->createPlayer();     // create player
 }
 
+Game::~Game()
+{
+    // TO DO (1) - delete dungeon (dungeon should delete level - level should delete monsters and weapons/scrolls on it)
+    // TO DO (1) - delete player (player should delete weapons/scrolls in its inventory)
+}
+
 Player* Game::player()
 {
     return m_player;
@@ -64,7 +70,8 @@ void Game::play()
             cout << MessageToPrint << endl;
             computerMessage = false;
         }
-        // after printing message, reset the part of the message that needs to be printed
+        
+        // after printing message, reset the message that needs to be printed
         MessageToPrint = "";
         
         char userInput;
@@ -82,8 +89,21 @@ void Game::play()
             if (userInput == 'g') {                                                             // pick up item (idol, weapon, scroll)
                  playerMessage = m_dungeon->level()->pickUpObject(MessageToPrint);
             }
-            if (userInput == 'i') {
+            if (userInput == 'i') {                                                             // display inventory
                 m_player->displayInventory();
+            }
+            if (userInput == 'w') {                                                             // wield weapon
+                playerMessage = m_player->wieldWeapon(MessageToPrint);
+                
+            }
+            if (userInput == 'r') {                                                             // read scroll
+                // TO DO (1) - after reading scroll, must delete scroll
+                // TO DO (1) - must change player's stats
+                // TO DO (1) - print out message saying what scroll I read
+            }
+            if (userInput == 'c') {
+                // TO DO (1) - should cheat work if the player is asleep ????? - no
+                // TO DO (1) - directly change the players stats
             }
         }
         

@@ -35,7 +35,7 @@ Level::Level(Game* game)        // Level Constructor
         m_level[k][7] = '#';
     }
     
-    // TO DO (1) - put weapon and scroll objects in level
+    // put weapon and scroll objects in level
     int numObjectsInLevel = randInt(2, 3);
     // loop and
     for (int i = 0; i < numObjectsInLevel; i++) {
@@ -53,7 +53,7 @@ Level::Level(Game* game)        // Level Constructor
     
     // TO DO (1) - put monsters in level
     
-    // TO DO - put idol or staircase in level
+    // put idol or staircase in level
     int progressionObjectRow = randInt(0, 17);
     int progressionObjectCol = randInt(0, 69);
     freePosition(progressionObjectRow, progressionObjectCol);
@@ -70,8 +70,8 @@ Level::Level(Game* game)        // Level Constructor
 // TO DO - implement Level Destructor
 Level::~Level()                     // Level Destructor
 {
-    // TO DO (1) - finish implementing level destructor (especially for monster vector and weapons and scrolls)
-    // TO DO (1) - delete progression object, monsters, weapons, scrolls
+    // TO DO (1) - delete scrolls and weapons on level
+    // TO DO (1) - delete monsters on level
     delete m_progressionObject;
 }
 

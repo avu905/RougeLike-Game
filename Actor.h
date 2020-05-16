@@ -81,6 +81,7 @@ public:
     virtual bool attemptMove(char c);
     void addObjectToInventory(InteractableObject* objectToAdd);
     void displayInventory();
+    bool wieldWeapon(string& MessageToPrint);
     
     // accessors
     int getInventorySize();
