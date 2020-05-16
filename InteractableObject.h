@@ -128,7 +128,7 @@ private:
     string m_name;
     string m_action;
     char m_scrollType;
-    int m_enhance;
+    int m_enhance;          // m_enhance is irrelevant for teleportation scroll since I use the freePosition() function instead
 };
 
 class ScrollOfTeleportation : public Scroll

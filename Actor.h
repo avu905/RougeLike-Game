@@ -40,6 +40,7 @@ public:
     virtual void increaseMaxHitPoints (int increase);
     virtual void increaseStrengthPoints (int increase);
     virtual void increaseDexterityPoints (int increase);
+    virtual void newPlayerPositionByTeleportationScroll(int newRow, int newCol);
     
     // accessors
     Game* game();

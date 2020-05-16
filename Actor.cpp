@@ -83,6 +83,11 @@ void Actor::increaseDexterityPoints(int increase)
 {
     m_dexpoints += increase;
 }
+void Actor::newPlayerPositionByTeleportationScroll(int newRow, int newCol)
+{
+    m_row = newRow;
+    m_col = newCol;
+}
 
 // accessors
 Game* Actor::game()
@@ -210,7 +215,6 @@ bool Player::wieldWeapon(string& MessageToPrint)
     
     // if the inputted character refers to a weapon or not
     Weapon* validWeapon = dynamic_cast<Weapon*>(m_inventory[weaponToWield-'a']);
-    
     if (validWeapon != nullptr ) {
         this->holdInitialObject(validWeapon);
         MessageToPrint = "You are wielding " + this->inventoryObjectNameAtIndex(weaponToWield - 'a');
@@ -244,10 +248,8 @@ bool Player::readScroll(string &MessageToPrint)
     
     // if the inputted character refers to a scroll or not
     Scroll* validScroll = dynamic_cast<Scroll*>(m_inventory[scrollToRead - 'a']);
-    
     MessageToPrint = "You read the scroll called " + this->inventoryObjectNameAtIndex(scrollToRead - 'a') + '\n';
     if (validScroll != nullptr) {
-        // TO DO (1) - if the scroll increases the player's stats above 99, then do not do scroll - IF STMTS ARE NOT IMPLEMENTED CORRECTLY
         if (validScroll->getScrollType() == 'A') {
             int increase = validScroll->getEnhance();
             if (this->getArmor() + increase <= this->getMaxArmorPoints()) {
@@ -276,12 +278,14 @@ bool Player::readScroll(string &MessageToPrint)
                 MessageToPrint += "You feel like less of a klutz.";
             }
         }
-        
-        // TO DO (1) - teleportation scroll
-        
-        // scroll magically self destructs
-            // have to delete the scroll - delete what the vector[i] points to
-            // erase that item/pointer in the vector
+        // TO DO (1) - make sure reading a teleportation scroll works correctly
+        else if (validScroll->getScrollType() == 'T') {
+            int newRowPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value
+            int newColPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value
+            this->game()->dungeon()->level()->freePosition(newRowPosition, newColPosition);
+            this->newPlayerPositionByTeleportationScroll(newRowPosition, newColPosition);
+            MessageToPrint =+ "You feel your body wrenched in space and time.";
+        }
         delete m_inventory[scrollToRead - 'a'];
         m_inventory.erase(m_inventory.begin()+(scrollToRead - 'a'));
     }
