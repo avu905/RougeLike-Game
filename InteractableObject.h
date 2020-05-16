@@ -122,6 +122,8 @@ public:
     Scroll(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance);
     virtual ~Scroll();
     string getName();
+    char getScrollType();
+    int getEnhance();
 private:
     string m_name;
     string m_action;

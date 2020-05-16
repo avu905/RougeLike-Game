@@ -28,7 +28,7 @@ Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int 
     m_game = game;
     m_char = c;
     
-    m_maxHitpoints = 99;
+    m_maxHitpoints = 20;            // TO DO (1) - should this be 20 and then it's increased after reading a scroll of health
     m_maxArmorpoints = 99;
     m_maxStrpoints = 99;
     m_maxDexpoints = 99;
@@ -64,6 +64,26 @@ void Actor::holdInitialObject(InteractableObject* object)
     m_initialObject = object;
 }
 
+void Actor::increaseArmorPoints(int increase)
+{
+    m_armorpoints += increase;
+}
+
+void Actor::increaseMaxHitPoints(int increase)
+{
+    m_maxHitpoints += increase;
+}
+
+void Actor::increaseStrengthPoints(int increase)
+{
+    m_strpoints += increase;
+}
+
+void Actor::increaseDexterityPoints(int increase)
+{
+    m_dexpoints += increase;
+}
+
 // accessors
 Game* Actor::game()
     {return m_game;}
@@ -73,14 +93,22 @@ int Actor::getColNum()
     {return m_col;}
 int Actor::getHitPoints()
     {return m_hitpoints;}
+int Actor::getMaxHitPoints()
+    {return m_maxHitpoints;}
 string Actor::getName()
     {return m_name;}
 int Actor::getArmor()
     {return m_armorpoints;}
+int Actor::getMaxArmorPoints()
+    {return m_maxArmorpoints;}
 int Actor::getStrength()
     {return m_strpoints;}
+int Actor::getMaxStrengthPoints()
+    {return m_maxStrpoints;}
 int Actor::getDexterity()
     {return m_dexpoints;}
+int Actor::getmaxDexterityPoints()
+{return m_maxDexpoints;}
 char Actor::getChar()
     {return m_char;}
 int Actor::getSleepTime()
@@ -189,6 +217,76 @@ bool Player::wieldWeapon(string& MessageToPrint)
     }
     else if (validWeapon == nullptr) {
         MessageToPrint = "You can't wield " + this->inventoryObjectNameAtIndex(weaponToWield - 'a');
+    }
+    return true;
+}
+
+bool Player::readScroll(string &MessageToPrint)
+{
+    // clear screen and print inventory
+    clearScreen();
+    cout << "Inventory: " << endl;
+    char alphabetCharacter = 'a';
+    for (int i = 0; i < m_inventory.size(); i++) {
+        cout << " " << alphabetCharacter << ". ";
+        if (m_inventory[i]->getSymbol() == '?')
+            cout << "A scroll called ";
+        cout << this->inventoryObjectNameAtIndex(i) << endl;
+        alphabetCharacter++;
+    }
+    
+    // inputs a character signifying which scroll they want to read
+    char scrollToRead = getCharacter();
+    
+    // user did not input a valid character (inputted a non-alphabet character and or a letter that doesn't correspond to an object in the inventory)
+    if (!(scrollToRead - 'a' >= 0 && scrollToRead - 'a' <= m_inventory.size() - 1))
+        return false;
+    
+    // if the inputted character refers to a scroll or not
+    Scroll* validScroll = dynamic_cast<Scroll*>(m_inventory[scrollToRead - 'a']);
+    
+    MessageToPrint = "You read the scroll called " + this->inventoryObjectNameAtIndex(scrollToRead - 'a') + '\n';
+    if (validScroll != nullptr) {
+        // TO DO (1) - if the scroll increases the player's stats above 99, then do not do scroll - IF STMTS ARE NOT IMPLEMENTED CORRECTLY
+        if (validScroll->getScrollType() == 'A') {
+            int increase = validScroll->getEnhance();
+            if (this->getArmor() + increase <= this->getMaxArmorPoints()) {
+                this->increaseArmorPoints(increase);
+                MessageToPrint += "Your armor glows blue.";
+            }
+        }
+        else if (validScroll->getScrollType() == 'H') {
+            int increase = validScroll->getEnhance();
+            if (this->getMaxHitPoints() + increase <= 99) {
+                this->increaseMaxHitPoints(validScroll->getEnhance());
+                MessageToPrint += "You feel your heart beating stronger.";
+            }
+        }
+        else if (validScroll->getScrollType() == 'S') {
+            int increase = validScroll->getEnhance();
+            if (this->getStrength() + increase <= this->getMaxStrengthPoints()) {
+                this->increaseStrengthPoints(validScroll->getEnhance());
+                MessageToPrint += "Your muscles bulge.";
+            }
+        }
+        else if (validScroll->getScrollType() == 'D') {
+            int increase = validScroll->getEnhance();
+            if (this->getDexterity() + increase <= this->getmaxDexterityPoints()) {
+                this->increaseDexterityPoints(validScroll->getEnhance());
+                MessageToPrint += "You feel like less of a klutz.";
+            }
+        }
+        
+        // TO DO (1) - teleportation scroll
+        
+        // scroll magically self destructs
+            // have to delete the scroll - delete what the vector[i] points to
+            // erase that item/pointer in the vector
+        delete m_inventory[scrollToRead - 'a'];
+        m_inventory.erase(m_inventory.begin()+(scrollToRead - 'a'));
+    }
+    else if (validScroll == nullptr) {
+        MessageToPrint = "You can't read a " + this->inventoryObjectNameAtIndex(scrollToRead - 'a');
     }
     return true;
 }

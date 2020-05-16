@@ -97,6 +97,7 @@ void Game::play()
                 
             }
             if (userInput == 'r') {                                                             // read scroll
+                playerMessage = m_player->readScroll(MessageToPrint);
                 // TO DO (1) - after reading scroll, must delete scroll
                 // TO DO (1) - must change player's stats
                 // TO DO (1) - print out message saying what scroll I read

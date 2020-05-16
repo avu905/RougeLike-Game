@@ -36,15 +36,23 @@ public:
     virtual bool attemptMove(char c) = 0;
     virtual void move(char direction);
     virtual void holdInitialObject(InteractableObject* object);
+    virtual void increaseArmorPoints (int increase);
+    virtual void increaseMaxHitPoints (int increase);
+    virtual void increaseStrengthPoints (int increase);
+    virtual void increaseDexterityPoints (int increase);
     
     // accessors
     Game* game();
     virtual int getRowNum();
     virtual int getColNum();
     virtual int getHitPoints();
+    virtual int getMaxHitPoints();
     virtual int getArmor();
+    virtual int getMaxArmorPoints();
     virtual int getStrength();
+    virtual int getMaxStrengthPoints();
     virtual int getDexterity();
+    virtual int getmaxDexterityPoints();
     virtual char getChar();
     virtual int getSleepTime();
     virtual string getName();
@@ -82,6 +90,7 @@ public:
     void addObjectToInventory(InteractableObject* objectToAdd);
     void displayInventory();
     bool wieldWeapon(string& MessageToPrint);
+    bool readScroll(string& MessageToPrint);
     
     // accessors
     int getInventorySize();

@@ -97,6 +97,10 @@ Scroll::~Scroll()
 {}
 string Scroll::getName()
     {return m_name;}
+char Scroll::getScrollType()
+    {return m_scrollType;}
+int Scroll::getEnhance()
+    {return m_enhance;}
 
 ScrollOfTeleportation::ScrollOfTeleportation(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance)
 : Scroll(row, col, symbol, game, name, action, scrollType, enhance)
