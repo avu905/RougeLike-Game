@@ -89,6 +89,14 @@ void Actor::newPlayerPositionByTeleportationScroll(int newRow, int newCol)
     m_col = newCol;
 }
 
+// TO DO (1) - implement playerCheat() correctly. should it set hitpoints and maxHitpoints to 50?
+void Actor::playerCheat()
+{
+    m_strpoints = 9;
+    m_hitpoints = 50;
+    m_maxHitpoints = 50;
+}
+
 // accessors
 Game* Actor::game()
     {return m_game;}

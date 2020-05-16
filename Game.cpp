@@ -43,10 +43,6 @@ Dungeon* Game::dungeon()
 
 void Game::play()
 {
-    // string message = ""; //
-    // bool displayPlayerMessage = false;
-    // bool displayComputerMessage = false;
-    
     string MessageToPrint = "";     // this sting will be modified and added to depending on what each actor (player/monster) does
     bool playerMessage = false;
     bool computerMessage = false;
@@ -98,13 +94,9 @@ void Game::play()
             }
             if (userInput == 'r') {                                                             // read scroll
                 playerMessage = m_player->readScroll(MessageToPrint);
-                // TO DO (1) - after reading scroll, must delete scroll
-                // TO DO (1) - must change player's stats
-                // TO DO (1) - print out message saying what scroll I read
             }
-            if (userInput == 'c') {
-                // TO DO (1) - should cheat work if the player is asleep ????? - no
-                // TO DO (1) - directly change the players stats
+            if (userInput == 'c') {                                                             // cheat - for testing purposes
+                m_player->playerCheat();
             }
         }
         

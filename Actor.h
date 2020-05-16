@@ -41,6 +41,7 @@ public:
     virtual void increaseStrengthPoints (int increase);
     virtual void increaseDexterityPoints (int increase);
     virtual void newPlayerPositionByTeleportationScroll(int newRow, int newCol);
+    virtual void playerCheat();
     
     // accessors
     Game* game();
