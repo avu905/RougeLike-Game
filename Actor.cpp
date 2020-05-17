@@ -117,14 +117,32 @@ bool Actor::isMonsterAtPosition(Actor* attacker, Actor*& defender, int row, int 
     return false;
 }
 
-void Actor::attack(Actor *attacker, Actor *defender)
+void Actor::attack(Actor *attacker, Actor *defender, bool& message, string& messageToPrint)
 {
+    // TO DO (1) - account for sleep if attacker is attacking with magic fangs of sleep - magic fangs of sleep must increase sleep time of defender
+    // TO DO (1) - if defender is already asleep make sure to update sleep time correctly
+    // TO DO (1) - update messageToPrint string too if defender is put to sleep
+    
     Weapon* attackerWeapon = dynamic_cast<Weapon*>(attacker->getInteractableObject());
+    
+    // calculate attacker and defender points
     int attackerPoints = attacker->getDexterity() + attackerWeapon->getWeaponDexterity();
     int defenderPoints = defender->getDexterity() + defender->getArmor();
+    
+    // update health and message to print depending on if there was an attack or not
     if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
         int damagePoints = randInt(0, attacker->getStrength() + attackerWeapon->getWeaponDamage() - 1);
         defender->m_hitpoints = defender->m_hitpoints - damagePoints;
+        message = true;
+        messageToPrint = attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName();
+        if (defender->m_hitpoints > 0)
+            messageToPrint += " and hits.";
+        else if (defender->m_hitpoints <= 0)
+            messageToPrint += " dealing a final blow.";
+    }
+    else {
+        message = true;
+        messageToPrint = attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName() + " and misses.";
     }
 }
 
@@ -164,7 +182,7 @@ InteractableObject* Actor::getInteractableObject()
 // ============== MONSTER IMPLEMENTATION =============
 // ===================================================
 Monster::Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object)
-: Actor(row, col, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, c, object)
+: Actor(row, col, randInt(5, 10), name, 2, randInt(2, 3), randInt(2, 3), 0, game, c, object)
 {}
 Monster::~Monster()
 {}
@@ -174,7 +192,7 @@ Goblin::Goblin(Game* game, int initialRow, int initialCol)
 {}
 Goblin::~Goblin()
 {}
-void Goblin::takeTurn(char userInput, Actor* attacker)
+void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
     
 }
@@ -184,7 +202,7 @@ SnakeWomen::SnakeWomen(Game* game, int initialRow, int initialCol)
 {}
 SnakeWomen::~SnakeWomen()
 {}
-void SnakeWomen::takeTurn(char userInput, Actor* attacker)
+void SnakeWomen::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
     
 }
@@ -194,7 +212,7 @@ BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
 {}
 BogeyMen::~BogeyMen()
 {}
-void BogeyMen::takeTurn(char userInput, Actor* attacker)
+void BogeyMen::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
     
 }
@@ -204,7 +222,7 @@ Dragon::Dragon(Game* game, int initialRow, int initialCol)
 {}
 Dragon::~Dragon()
 {}
-void Dragon::takeTurn(char userInput, Actor* attacker)
+void Dragon::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
     
 }
@@ -354,7 +372,7 @@ bool Player::readScroll(string &MessageToPrint)
                 MessageToPrint += "You feel like less of a klutz.";
             }
         }
-        // TO DO (1) - make sure reading a teleportation scroll works correctly
+        // TO DO (1) - make sure reading a teleportation scroll works correctly - seems to be working correctly
         else if (validScroll->getScrollType() == 'T') {
             int newRowPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value
             int newColPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value
@@ -371,44 +389,39 @@ bool Player::readScroll(string &MessageToPrint)
     return true;
 }
 
-void Player::takeTurn(char userInput, Actor* attacker)
+void Player::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
     Actor* defender = nullptr;
     
     if (userInput == 'h') {                 // move or attack left
         if (isMonsterAtPosition(attacker, defender, attacker->getRowNum(), attacker->getColNum() - 1) == true) {
             // TO DO (1) - if statement and call attack if defender is not a nullptr
-            // call attack function
-            attacker->attack(attacker, defender);
+            // TO DO (1) - modify names of the monsters to "snakewoman" and "bogeyman" and other things so prints out "at player" and "at THE monster"
+            attacker->attack(attacker, defender, message, messageToPrint);
         }
         else
             attacker->move(userInput);
     }
     else if (userInput == 'l') {           // move or attack right
         if (isMonsterAtPosition(attacker, defender, attacker->getRowNum(), attacker->getColNum() + 1) == true) {
-            // call attack function
+            attacker->attack(attacker, defender, message, messageToPrint);
         }
         else
             attacker->move(userInput);
     }
     else if (userInput == 'k') {           // move or attack above
         if (isMonsterAtPosition(attacker, defender, attacker->getRowNum() - 1, attacker->getColNum()) == true) {
-            // call attack function
+            attacker->attack(attacker, defender, message, messageToPrint);
         }
         else
             attacker->move(userInput);
     }
     else if (userInput == 'j') {           // move or attack below
         if (isMonsterAtPosition(attacker, defender, attacker->getRowNum() + 1, attacker->getColNum()) == true) {
-            // call attack function
+            attacker->attack(attacker, defender, message, messageToPrint);
         }
         else
             attacker->move(userInput);
     }
-    
-    //else if (POSITION IS A MONSTER)
-    // if that position is monster, then attack
-        // player->attack()
-    
     // TO DO (1) - ensure that monsters do not attack each other
 }

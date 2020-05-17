@@ -49,6 +49,8 @@ int Weapon::getWeaponDexterity()
     {return m_dexterityBonus;}
 int Weapon::getWeaponDamage()
     {return m_damageAmount;}
+string Weapon::getWeaponAction()
+    {return m_action;}
 
 Shortsword::Shortsword(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount)
 : Weapon(row, col, symbol, game, name, action, dexterityBonus, damageAmount)

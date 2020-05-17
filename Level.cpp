@@ -36,8 +36,8 @@ Level::Level(Game* game, int curr_level)        // Level Constructor
     }
     
     // put weapon and scroll objects in level
-        // weapons : short sword, mace, long sword
-        // scrolls : armor, health, strength, dexterity
+        // weapons : short sword, mace, long sword ONLY
+        // scrolls : armor, health, strength, dexterity ONLY
     int numObjectsInLevel = randInt(2, 3);
     for (int i = 0; i < numObjectsInLevel; i++) {
         int weaponOrScroll = randInt(1, 2);
@@ -58,14 +58,13 @@ Level::Level(Game* game, int curr_level)        // Level Constructor
         // dragon : level 3 - 4
     int numMonstersInLevel = randInt(2, 5 * (curr_level + 1) + 1);
     for (int monstersAdded = 0; monstersAdded < numMonstersInLevel; monstersAdded++) {
-        // int currentLevel = m_game->dungeon()->getCurrLevel();
-        if (curr_level == 0 || curr_level == 1) {        // goblins, snakewomen
+        if (curr_level == 0 || curr_level == 1) {          // goblins, snakewomen
             addMonster(randInt(0, 1));
         }
         else if (curr_level == 2) {                        // goblins, snakewomen, bogeymen
             addMonster(randInt(0, 2));
         }
-        else if (curr_level == 3 || curr_level == 4) {   // goblins, snakewomen, bogeymen, dragons
+        else if (curr_level == 3 || curr_level == 4) {     // goblins, snakewomen, bogeymen, dragons
             addMonster(randInt(0, 3));
         }
     }
@@ -95,6 +94,7 @@ Level::~Level()                     // Level Destructor
 void Level::display()
 {
     // populate m_level with only walls and interactable objects (not including staircases and golden idol)
+    // TO DO (1) - is the if statement correct - should it be "if (m_level[row][col] != '#' && m_level[row][col] != '?' && m_level[row][col] != ')')"
     for (int row = 0; row < 18; row++) {
         for (int col = 0; col < 70; col++) {
             if (m_level[row][col] != '#' && m_level[row][col] != '&' && m_level[row][col] != ')')
@@ -178,7 +178,8 @@ bool Level::pickUpObject(string& messageToPrint)
     }
     
     // pick up an object
-    if (m_player->getInventorySize() < 25) {
+    // TO DO (1) - make sure the if statement should be < 26 and not < 25
+    if (m_player->getInventorySize() < 26) {
         for (int i = 0; i < m_objects.size(); i++) {
             if (m_player->getRowNum() == m_objects[i]->getRow() && m_player->getColNum() == m_objects[i]->getCol()) {
                 messageToPrint += "You pick up ";
@@ -254,8 +255,69 @@ void Level::clearDeadMonsters()
     for (int i = 0; i < m_monsters.size(); i++) {
         if (m_monsters[i]->getHitPoints() <= 0) {
             // TO DO (1) - monsters should drop an item if they die by calling drop item function
+            monsterDropItem(m_monsters[i]);
             delete m_monsters[i];
             m_monsters.erase(m_monsters.begin() + i);
         }
     }
+}
+
+void Level::monsterDropItem(Monster* monster)
+{
+    if (monster->getChar() == 'B') {
+        if (isObjectAtSpot(monster) == true)
+            return;
+        bool chanceOfDropping = trueWithProbability(0.10);
+        if (chanceOfDropping == true)
+            m_objects.push_back(new MagicAxe(monster->getRowNum(), monster->getColNum(), ')', m_game, "magic axe", "chops", 5, 5));
+    }
+    else if (monster->getChar() == 'S') {
+        if (isObjectAtSpot(monster) == true)
+            return;
+        bool chanceOfDropping = trueWithProbability(0.3333333);
+        if (chanceOfDropping == true)
+            m_objects.push_back(new MagicFangsOfSleep(monster->getRowNum(), monster->getColNum(), ')', m_game, "magic fangs of sleep", "strikes", 3, 2));
+    }
+    else if (monster->getChar() == 'D') {
+        if (isObjectAtSpot(monster) == true)
+            return;
+        int scrollToDrop = randInt(0, 4);
+        if (scrollToDrop == 0)
+            m_objects.push_back(new ScrollOfTeleportation(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of teleportation", "You feel your body wrenched in space and time.", 'T', 0));
+        else if (scrollToDrop == 1)
+            m_objects.push_back(new ScrollOfImproveArmor(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of enhance armor", "Your armor glows blue.", 'A', randInt(1, 3)));
+        else if (scrollToDrop == 2)
+            // ScrollOfRaiseStrength(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance);
+            m_objects.push_back(new ScrollOfRaiseStrength(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of strength", "Your muscles bulge.", 'S', randInt(1, 3)));
+        else if (scrollToDrop == 3)
+            m_objects.push_back(new ScrollOfEnhanceHealth(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of enhance health", "You feel your heart beating stronger.", 'H', randInt(3, 8)));
+        else if (scrollToDrop == 4)
+            m_objects.push_back(new ScrollOfEnhanceDexterity(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of enhance dexterity", "You feel like less of a klutz.", 'D', 1));
+    }
+    else if (monster->getChar() == 'G') {
+        if (isObjectAtSpot(monster) == true)
+            return;
+        bool chanceOfDropping = trueWithProbability(0.3333333);
+        int magicAxeOrMagicFangsOfSleep = randInt(0, 1);
+        if (chanceOfDropping == true && magicAxeOrMagicFangsOfSleep == 0)
+            m_objects.push_back(new MagicFangsOfSleep(monster->getRowNum(), monster->getColNum(), ')', m_game, "magic fangs of sleep", "strikes", 3, 2));
+        else if (chanceOfDropping == true && magicAxeOrMagicFangsOfSleep == 1)
+            m_objects.push_back(new MagicAxe(monster->getRowNum(), monster->getColNum(), ')', m_game, "magic axe", "chops", 5, 5));
+    }
+}
+
+bool Level::isObjectAtSpot(Monster* monster)
+{
+    // only checks if weapon or scroll is at that position
+    for (int i = 0; i < m_objects.size(); i++) {
+        if (monster->getRowNum() == m_objects[i]->getRow() && monster->getColNum() == m_objects[i]->getCol())
+            return true;
+    }
+    
+    // checks if staircase or idol is at that position
+    if (monster->getRowNum() == m_progressionObject->getRow() && monster->getColNum() == m_progressionObject->getCol())
+        return true;
+    
+    // there is not object at that position
+    return false;
 }

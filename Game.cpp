@@ -77,7 +77,8 @@ void Game::play()
             if (userInput == 'q')           // quit Game
                 return;
             if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l') { // player moves or attacks
-                m_player->takeTurn(userInput, m_player);
+                // TO DO (1) - update player message here m_player->takeTurn(userInput, m_player, playerMessage, messageToPrint);
+                m_player->takeTurn(userInput, m_player, playerMessage, messageToPrint);
             }
             if (userInput == '>') {                                                             // take staircase
                 if ( m_player->getRowNum() == m_dungeon->level()->progressObj()->getRow() && m_player->getColNum() == m_dungeon->level()->progressObj()->getCol() && m_dungeon->level()->progressObj()->getSymbol() == '>')

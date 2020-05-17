@@ -34,7 +34,7 @@ public:
     // non-accessors
     void decreaseSleep();
     virtual void move(char direction);
-    virtual void attack(Actor* attacker, Actor* defender);
+    virtual void attack(Actor* attacker, Actor* defender, bool& message, string& messageToPrint);
     virtual void holdInitialObject(InteractableObject* object);
     virtual void increaseArmorPoints (int increase);
     virtual void increaseMaxHitPoints (int increase);
@@ -42,7 +42,7 @@ public:
     virtual void increaseDexterityPoints (int increase);
     virtual void newPlayerPositionByTeleportationScroll(int newRow, int newCol);
     virtual void playerCheat();
-    virtual void takeTurn(char userInput, Actor* attacker) = 0;                                        // determines if actor should move or attack
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint) = 0; // determines if actor should move or attack
     virtual bool isMonsterAtPosition (Actor* attacker, Actor*& defender, int row, int col);            // determines if there is a monster at a position (attacker is technically player)
     
     // accessors
@@ -90,7 +90,7 @@ class Monster : public Actor
 public:
     Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object);
     virtual ~Monster();
-    virtual void takeTurn(char userInput, Actor* attacker) = 0;
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint) = 0;
 private:
 };
 
@@ -99,7 +99,7 @@ class Goblin : public Monster
 public:
     Goblin(Game* game, int initialRow, int initialCol);
     ~Goblin();
-    virtual void takeTurn(char userInput, Actor* attacker);
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
 
@@ -108,7 +108,7 @@ class SnakeWomen : public Monster
 public:
     SnakeWomen(Game* game, int initialRow, int initialCol);
     ~SnakeWomen();
-    virtual void takeTurn(char userInput, Actor* attacker);
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
 
@@ -117,7 +117,7 @@ class BogeyMen : public Monster
 public:
     BogeyMen(Game* game, int initialRow, int initialCol);
     ~BogeyMen();
-    virtual void takeTurn(char userInput, Actor* attacker);
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
 
@@ -126,7 +126,7 @@ class Dragon : public Monster
 public:
     Dragon(Game* game, int initialRow, int initialCol);
     ~Dragon();
-    virtual void takeTurn(char userInput, Actor* attacker);
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
 
@@ -143,7 +143,7 @@ public:
     void displayInventory();
     bool wieldWeapon(string& MessageToPrint);
     bool readScroll(string& MessageToPrint);
-    virtual void takeTurn(char userInput, Actor* attacker);
+    virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
     
     // accessors
     int getInventorySize();

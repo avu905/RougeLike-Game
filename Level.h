@@ -39,9 +39,11 @@ public:
     Player* createPlayer();                                // create a new player and return a pointer to the player
     void freePosition(int &row, int &col);                 // set to free position on m_level
     bool pickUpObject(string& MessageToPrint);             // pick up idol, scroll, or weapon
-    void addInteractableObject(int objectType);            // create/dynamically allocate a new interactable object (weapon/scroll) and place in the level
+    void addInteractableObject(int objectType);            // only used in level constructor - create/dynamically allocate a new weapon/scroll and place in the level
     void addMonster(int monsterType);
     void clearDeadMonsters();                              // clear dead monsters from level
+    void monsterDropItem(Monster* monster);                // monster will drop an item - only called clearDearmonsters() after a monster dies
+    bool isObjectAtSpot(Monster* monster);                 // checks if there is an object at a certain position
     
 private:
     char m_level[18][70];                           // level layout
@@ -52,7 +54,7 @@ private:
     int initialPlayerCol;                           // must make level
     
     ProgressionObject* m_progressionObject;         // pointer to staircase or idol
-    vector<InteractableObject*> m_objects;          // vector of pointers to objects (weapons or scrolls) on level
+    vector<InteractableObject*> m_objects;          // vector of pointers to weapons or scrolls) ONLY on level
     
     vector<Monster*> m_monsters;                    // vector of pointers to monsters on level
 };
