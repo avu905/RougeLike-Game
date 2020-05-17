@@ -40,40 +40,28 @@ Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int 
 Actor::~Actor()      // Actor Destructor
 {}
 
-void Actor::move(char direction, Actor* attacker)
+void Actor::move(char direction)
 {
-    // TO DO (1) - ensure that my monsters do not attack each other
+    // TO DO (1) - recombine the nested if statements into 1 if statement again with &&
     if (direction == 'h') {
         if (this->game()->dungeon()->level()->validMove(m_row, m_col-1) == true) {              // move left
             m_col = m_col - 1;
         }
-        
-        // player->attack()
-        // taketurn() calls move() or attack
-        // actor->takeTurn()  DUE TO POLYMORPHISM WILL CALL THE MOST DERIVED FUNCTION FOR EACH ACTOR
-            // taketurn() figures out which direction each monster should specifically move if (b/c they can smell player)
-            // taketurn() for player would call attack function for player
-        // - move towards player
-        // - if next to player, attack him
-                                                                                                // attack actor to left
     }
     if (direction == 'l') {
         if (this->game()->dungeon()->level()->validMove(m_row, m_col+1) == true) {              // move right
             m_col = m_col + 1;
         }
-                                                                                                // attack actor to right
     }
     if (direction == 'k') {
         if (this->game()->dungeon()->level()->validMove(m_row-1, m_col) == true) {              // move up
             m_row = m_row - 1;
         }
-                                                                                                // attack actor above
     }
     if (direction == 'j') {
         if (this->game()->dungeon()->level()->validMove(m_row+1, m_col) == true) {              // move down
             m_row = m_row + 1;
         }
-                                                                                                // attack actor below
     }
 }
 
@@ -118,6 +106,28 @@ void Actor::playerCheat()
     m_maxHitpoints = 50;
 }
 
+bool Actor::isMonsterAtPosition(Actor* attacker, Actor*& defender, int row, int col)
+{
+    for (int everyMonster = 0; everyMonster < m_game->dungeon()->level()->numberOfMonstersOnlevel(); everyMonster++) {
+        if (row == game()->dungeon()->level()->monsterAtIndex(everyMonster)->getRowNum() && col == game()->dungeon()->level()->monsterAtIndex(everyMonster)->getColNum()) {
+            defender = m_game->dungeon()->level()->monsterAtIndex(everyMonster);
+            return true;
+        }
+    }
+    return false;
+}
+
+void Actor::attack(Actor *attacker, Actor *defender)
+{
+    Weapon* attackerWeapon = dynamic_cast<Weapon*>(attacker->getInteractableObject());
+    int attackerPoints = attacker->getDexterity() + attackerWeapon->getWeaponDexterity();
+    int defenderPoints = defender->getDexterity() + defender->getArmor();
+    if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
+        int damagePoints = randInt(0, attacker->getStrength() + attackerWeapon->getWeaponDamage() - 1);
+        defender->m_hitpoints = defender->m_hitpoints - damagePoints;
+    }
+}
+
 // accessors
 Game* Actor::game()
     {return m_game;}
@@ -142,11 +152,13 @@ int Actor::getMaxStrengthPoints()
 int Actor::getDexterity()
     {return m_dexpoints;}
 int Actor::getmaxDexterityPoints()
-{return m_maxDexpoints;}
+    {return m_maxDexpoints;}
 char Actor::getChar()
     {return m_char;}
 int Actor::getSleepTime()
-{return m_sleeptime;}
+    {return m_sleeptime;}
+InteractableObject* Actor::getInteractableObject()
+{return m_initialObject;}
 
 // ===================================================
 // ============== MONSTER IMPLEMENTATION =============
@@ -162,28 +174,40 @@ Goblin::Goblin(Game* game, int initialRow, int initialCol)
 {}
 Goblin::~Goblin()
 {}
+void Goblin::takeTurn(char userInput, Actor* attacker)
+{
+    
+}
 
 SnakeWomen::SnakeWomen(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(3, 6), "Snake Women", 3, 2, 3, 0, game, 'S', new MagicFangsOfSleep(0, 0, ')', game, "magic fangs of sleep", "strikes", 3, 2))
 {}
 SnakeWomen::~SnakeWomen()
 {}
+void SnakeWomen::takeTurn(char userInput, Actor* attacker)
+{
+    
+}
 
 BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, 'B', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
 {}
 BogeyMen::~BogeyMen()
 {}
+void BogeyMen::takeTurn(char userInput, Actor* attacker)
+{
+    
+}
 
 Dragon::Dragon(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(20, 25), "Dragon", 4, 4, 4, 0, game, 'D', new LongSword(0, 0, ')', game, "long sword", "swings", 2, 4))
 {}
 Dragon::~Dragon()
 {}
-
-
-
-
+void Dragon::takeTurn(char userInput, Actor* attacker)
+{
+    
+}
 
 // ===================================================
 // ============== PLAYER IMPLEMENTATION ==============
@@ -203,21 +227,6 @@ Player::~Player()
 {
     // TO DO (1) - delete objects in player's inventory
 }
-
-// TO DO (1) - possibly delete attemptMove(char c)
-//bool Player::attemptMove(char c)
-//{
-//    // can't move in that direction
-//    if (c == 'h' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()-1) == '#')
-//        return false;
-//    if (c == 'l' && game()->dungeon()->level()->getLevelChar(getRowNum(), getColNum()+1) == '#')
-//        return false;
-//    if (c == 'j' && game()->dungeon()->level()->getLevelChar(getRowNum()+1, getColNum()) == '#')
-//        return false;
-//    if (c == 'k' && game()->dungeon()->level()->getLevelChar(getRowNum()-1, getColNum()) == '#')
-//        return false;
-//    return true;
-//}
 
 int Player::getInventorySize()
     {return m_inventory.size();}
@@ -360,4 +369,46 @@ bool Player::readScroll(string &MessageToPrint)
         MessageToPrint = "You can't read a " + this->inventoryObjectNameAtIndex(scrollToRead - 'a');
     }
     return true;
+}
+
+void Player::takeTurn(char userInput, Actor* attacker)
+{
+    Actor* defender = nullptr;
+    
+    if (userInput == 'h') {                 // move or attack left
+        if (isMonsterAtPosition(attacker, defender, attacker->getRowNum(), attacker->getColNum() - 1) == true) {
+            // TO DO (1) - if statement and call attack if defender is not a nullptr
+            // call attack function
+            attacker->attack(attacker, defender);
+        }
+        else
+            attacker->move(userInput);
+    }
+    else if (userInput == 'l') {           // move or attack right
+        if (isMonsterAtPosition(attacker, defender, attacker->getRowNum(), attacker->getColNum() + 1) == true) {
+            // call attack function
+        }
+        else
+            attacker->move(userInput);
+    }
+    else if (userInput == 'k') {           // move or attack above
+        if (isMonsterAtPosition(attacker, defender, attacker->getRowNum() - 1, attacker->getColNum()) == true) {
+            // call attack function
+        }
+        else
+            attacker->move(userInput);
+    }
+    else if (userInput == 'j') {           // move or attack below
+        if (isMonsterAtPosition(attacker, defender, attacker->getRowNum() + 1, attacker->getColNum()) == true) {
+            // call attack function
+        }
+        else
+            attacker->move(userInput);
+    }
+    
+    //else if (POSITION IS A MONSTER)
+    // if that position is monster, then attack
+        // player->attack()
+    
+    // TO DO (1) - ensure that monsters do not attack each other
 }

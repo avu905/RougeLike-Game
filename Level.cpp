@@ -165,7 +165,7 @@ void Level::freePosition(int &row, int &col)        // obtains a free position (
     }
 }
 
-bool Level::pickUpObject(string& MessageToPrint)
+bool Level::pickUpObject(string& messageToPrint)
 {
     // pick up the idol - win game and exit
     if (m_player->getRowNum() == m_progressionObject->getRow() && m_player->getColNum() == m_progressionObject->getCol() && m_progressionObject->getSymbol() == '&') {
@@ -181,24 +181,24 @@ bool Level::pickUpObject(string& MessageToPrint)
     if (m_player->getInventorySize() < 25) {
         for (int i = 0; i < m_objects.size(); i++) {
             if (m_player->getRowNum() == m_objects[i]->getRow() && m_player->getColNum() == m_objects[i]->getCol()) {
-                MessageToPrint += "You pick up ";
+                messageToPrint += "You pick up ";
                 if (m_objects[i]->getSymbol() == ')') {
                     Weapon* weaponPointer = dynamic_cast<Weapon*>(m_objects[i]);
-                    MessageToPrint += weaponPointer->getName();
+                    messageToPrint += weaponPointer->getName();
                 }
                 else if (m_objects[i]->getSymbol()) {
                     Scroll* scrollPointer = dynamic_cast<Scroll*>(m_objects[i]);
-                    MessageToPrint += "a scroll called ";
-                    MessageToPrint += scrollPointer->getName();
+                    messageToPrint += "a scroll called ";
+                    messageToPrint += scrollPointer->getName();
                 }
                 m_player->addObjectToInventory(m_objects[i]);       // add object to player's m_inventory
-                m_objects.erase(m_objects.begin()+i);               // erase object from levels m_objects vector (level no longer has access to that object)
+                m_objects.erase(m_objects.begin() + i);               // erase object from levels m_objects vector (level no longer has access to that object)
             }
         }
         return true;
     }
     else {
-        MessageToPrint += "Your knapsack is full; you can't pick that up.";
+        messageToPrint += "Your knapsack is full; you can't pick that up.";
         return true;    // TO DO (1) - should I return true here ?????
     }
     
@@ -246,5 +246,16 @@ void Level::addMonster(int monsterType)
     }
     else if (monsterType == 3) {
         m_monsters.push_back(new Dragon(m_game, initialMonsterRow, initialMonsterCol));
+    }
+}
+
+void Level::clearDeadMonsters()
+{
+    for (int i = 0; i < m_monsters.size(); i++) {
+        if (m_monsters[i]->getHitPoints() <= 0) {
+            // TO DO (1) - monsters should drop an item if they die by calling drop item function
+            delete m_monsters[i];
+            m_monsters.erase(m_monsters.begin() + i);
+        }
     }
 }

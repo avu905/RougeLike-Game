@@ -12,7 +12,6 @@
 #include <iostream>
 #include <vector>
 
-//class Actor;
 //#include "Actor.h"
 class Monster;
 #include "Game.h"
@@ -30,7 +29,9 @@ public:
     // accessors
     char getLevelChar(int row, int col) {return m_level[row][col];}
     InteractableObject* progressObj() {return m_progressionObject;}
-    int numberOfMonstersOnlevel() {return m_objects.size();}
+    int numberOfMonstersOnlevel() {return m_monsters.size();}
+    Monster* monsterAtIndex(int index) {return m_monsters[index];}
+    
     
     // non-accessors
     void display();                                        // display the level
@@ -40,6 +41,7 @@ public:
     bool pickUpObject(string& MessageToPrint);             // pick up idol, scroll, or weapon
     void addInteractableObject(int objectType);            // create/dynamically allocate a new interactable object (weapon/scroll) and place in the level
     void addMonster(int monsterType);
+    void clearDeadMonsters();                              // clear dead monsters from level
     
 private:
     char m_level[18][70];                           // level layout

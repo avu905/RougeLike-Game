@@ -66,6 +66,8 @@ public:
     Weapon(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount); // constructor for weapons put into level
     virtual ~Weapon();
     string getName();
+    int getWeaponDexterity();
+    int getWeaponDamage();
     
 private:
     string m_name;

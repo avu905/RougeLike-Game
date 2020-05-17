@@ -33,9 +33,8 @@ public:
 
     // non-accessors
     void decreaseSleep();
-    // TO DO (1) - possibly delete attemptMove(char c)
-    // virtual bool attemptMove(char c) = 0;
-    virtual void move(char direction, Actor* attacker);
+    virtual void move(char direction);
+    virtual void attack(Actor* attacker, Actor* defender);
     virtual void holdInitialObject(InteractableObject* object);
     virtual void increaseArmorPoints (int increase);
     virtual void increaseMaxHitPoints (int increase);
@@ -43,8 +42,8 @@ public:
     virtual void increaseDexterityPoints (int increase);
     virtual void newPlayerPositionByTeleportationScroll(int newRow, int newCol);
     virtual void playerCheat();
-    // virtual void takeTurn();
-    // virtual void attack(Actor* target, int damage);
+    virtual void takeTurn(char userInput, Actor* attacker) = 0;                                        // determines if actor should move or attack
+    virtual bool isMonsterAtPosition (Actor* attacker, Actor*& defender, int row, int col);            // determines if there is a monster at a position (attacker is technically player)
     
     // accessors
     Game* game();
@@ -61,6 +60,7 @@ public:
     virtual char getChar();
     virtual int getSleepTime();
     virtual string getName();
+    virtual InteractableObject* getInteractableObject();            // technically gets the weapon that the actor is holding
     
 private:
     int m_row;          // current row position in level
@@ -90,6 +90,7 @@ class Monster : public Actor
 public:
     Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object);
     virtual ~Monster();
+    virtual void takeTurn(char userInput, Actor* attacker) = 0;
 private:
 };
 
@@ -98,6 +99,7 @@ class Goblin : public Monster
 public:
     Goblin(Game* game, int initialRow, int initialCol);
     ~Goblin();
+    virtual void takeTurn(char userInput, Actor* attacker);
 private:
 };
 
@@ -106,6 +108,7 @@ class SnakeWomen : public Monster
 public:
     SnakeWomen(Game* game, int initialRow, int initialCol);
     ~SnakeWomen();
+    virtual void takeTurn(char userInput, Actor* attacker);
 private:
 };
 
@@ -114,6 +117,7 @@ class BogeyMen : public Monster
 public:
     BogeyMen(Game* game, int initialRow, int initialCol);
     ~BogeyMen();
+    virtual void takeTurn(char userInput, Actor* attacker);
 private:
 };
 
@@ -122,12 +126,9 @@ class Dragon : public Monster
 public:
     Dragon(Game* game, int initialRow, int initialCol);
     ~Dragon();
+    virtual void takeTurn(char userInput, Actor* attacker);
 private:
 };
-
-
-
-
 
 // ================================================
 // ============== PLAYER DECLARATION ==============
@@ -138,12 +139,11 @@ class Player : public Actor
 public:
     Player(Game* game, int initialRow, int initialCol);
     ~Player();
-    // TO DO (1) - possibly delete attemptMove(char c)
-    // virtual bool attemptMove(char c);
     void addObjectToInventory(InteractableObject* objectToAdd);
     void displayInventory();
     bool wieldWeapon(string& MessageToPrint);
     bool readScroll(string& MessageToPrint);
+    virtual void takeTurn(char userInput, Actor* attacker);
     
     // accessors
     int getInventorySize();

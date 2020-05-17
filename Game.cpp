@@ -43,7 +43,7 @@ Dungeon* Game::dungeon()
 
 void Game::play()
 {
-    string MessageToPrint = "";     // this sting will be modified and added to depending on what each actor (player/monster) does
+    string messageToPrint = "";     // this sting will be modified and added to depending on what each actor (player/monster) does
     bool playerMessage = false;
     bool computerMessage = false;
     
@@ -59,16 +59,16 @@ void Game::play()
         
         // print message after player or monster does something
         if (playerMessage == true) {             // print message when player does something
-            cout << MessageToPrint << endl;
+            cout << messageToPrint << endl;
             playerMessage = false;
         }
         else if (computerMessage == true) {       // print message when computer/monsters do something
-            cout << MessageToPrint << endl;
+            cout << messageToPrint << endl;
             computerMessage = false;
         }
         
         // after printing message, reset the message that needs to be printed
-        MessageToPrint = "";
+        messageToPrint = "";
         
         char userInput;
         userInput = getCharacter();
@@ -77,23 +77,23 @@ void Game::play()
             if (userInput == 'q')           // quit Game
                 return;
             if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l') { // player moves or attacks
-                m_player->move(userInput, m_player);
+                m_player->takeTurn(userInput, m_player);
             }
             if (userInput == '>') {                                                             // take staircase
                 if ( m_player->getRowNum() == m_dungeon->level()->progressObj()->getRow() && m_player->getColNum() == m_dungeon->level()->progressObj()->getCol() && m_dungeon->level()->progressObj()->getSymbol() == '>')
                     m_dungeon->newLevel();
             }
             if (userInput == 'g') {                                                             // pick up item (idol, weapon, scroll)
-                 playerMessage = m_dungeon->level()->pickUpObject(MessageToPrint);
+                 playerMessage = m_dungeon->level()->pickUpObject(messageToPrint);
             }
             if (userInput == 'i') {                                                             // display inventory
                 m_player->displayInventory();
             }
             if (userInput == 'w') {                                                             // wield weapon
-                playerMessage = m_player->wieldWeapon(MessageToPrint);
+                playerMessage = m_player->wieldWeapon(messageToPrint);
             }
             if (userInput == 'r') {                                                             // read scroll
-                playerMessage = m_player->readScroll(MessageToPrint);
+                playerMessage = m_player->readScroll(messageToPrint);
             }
             if (userInput == 'c') {                                                             // cheat - for testing purposes
                 m_player->playerCheat();
@@ -110,8 +110,15 @@ void Game::play()
         // TO DO (1) - finish implementing this ==> computerMessage = m_dungeon->level()->moveMonsters();
 //        for (int i = 0; i < m_dungeon->level()->numberOfMonstersOnlevel(); i++) {
 //            m_dungeon->level()->moveMonsters(); AND moveMonsters will call the move() function for monsters
-              // m_dungeon->level()->moveMonsters()->move('m', m_monsters[i])
+              // m_dungeon->level()->moveMonsters()->takeTurn()
+              //
 //        }
+        
+        // TO DO (1) - if player is dead print out applicable message and delet everything - THIS MUST COME BEFORE B/C WILL HAVE TO IMMEDIATELY END GAME IF PLAYER DIES
+        
+        // TO DO (1) - loop through and if any monsters are dead print out applicable message
+        // clear all dead monsters
+        m_dungeon->level()->clearDeadMonsters();
         
         
     }
