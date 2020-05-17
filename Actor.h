@@ -35,7 +35,7 @@ public:
     void decreaseSleep();
     // TO DO (1) - possibly delete attemptMove(char c)
     // virtual bool attemptMove(char c) = 0;
-    virtual void move(char direction);
+    virtual void move(char direction, Actor* attacker);
     virtual void holdInitialObject(InteractableObject* object);
     virtual void increaseArmorPoints (int increase);
     virtual void increaseMaxHitPoints (int increase);
@@ -43,6 +43,8 @@ public:
     virtual void increaseDexterityPoints (int increase);
     virtual void newPlayerPositionByTeleportationScroll(int newRow, int newCol);
     virtual void playerCheat();
+    // virtual void takeTurn();
+    // virtual void attack(Actor* target, int damage);
     
     // accessors
     Game* game();
@@ -91,6 +93,22 @@ public:
 private:
 };
 
+class Goblin : public Monster
+{
+public:
+    Goblin(Game* game, int initialRow, int initialCol);
+    ~Goblin();
+private:
+};
+
+class SnakeWomen : public Monster
+{
+public:
+    SnakeWomen(Game* game, int initialRow, int initialCol);
+    ~SnakeWomen();
+private:
+};
+
 class BogeyMen : public Monster
 {
 public:
@@ -98,6 +116,18 @@ public:
     ~BogeyMen();
 private:
 };
+
+class Dragon : public Monster
+{
+public:
+    Dragon(Game* game, int initialRow, int initialCol);
+    ~Dragon();
+private:
+};
+
+
+
+
 
 // ================================================
 // ============== PLAYER DECLARATION ==============

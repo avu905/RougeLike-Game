@@ -14,7 +14,7 @@ Dungeon::Dungeon(Game* game)    // Dungeon Constructor
 {
     m_game = game;
     curr_level = 0;
-    level_ptr = new Level(game);
+    level_ptr = new Level(game, curr_level);
 }
 
 Dungeon::~Dungeon()             // Dungeon Destructor
@@ -29,7 +29,7 @@ void Dungeon::newLevel()
 {
     curr_level++;
     delete level_ptr;
-    level_ptr = new Level(m_game);
+    level_ptr = new Level(m_game, curr_level);
 }
 
 Level* Dungeon::level()

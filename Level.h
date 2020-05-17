@@ -24,12 +24,13 @@ using namespace std;
 class Level
 {
 public:
-    Level(Game* game);                      // Level Constructor
+    Level(Game* game, int curr_level);      // Level Constructor
     ~Level();                               // Level Destructor
     
     // accessors
     char getLevelChar(int row, int col) {return m_level[row][col];}
     InteractableObject* progressObj() {return m_progressionObject;}
+    int numberOfMonstersOnlevel() {return m_objects.size();}
     
     // non-accessors
     void display();                                        // display the level

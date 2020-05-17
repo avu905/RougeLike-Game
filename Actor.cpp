@@ -28,7 +28,7 @@ Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int 
     m_game = game;
     m_char = c;
     
-    m_maxHitpoints = 20;            // TO DO (1) - should this be 20 and then it's increased after reading a scroll of health
+    m_maxHitpoints = 20;
     m_maxArmorpoints = 99;
     m_maxStrpoints = 99;
     m_maxDexpoints = 99;
@@ -40,19 +40,40 @@ Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int 
 Actor::~Actor()      // Actor Destructor
 {}
 
-void Actor::move(char direction)
+void Actor::move(char direction, Actor* attacker)
 {
-    if (direction == 'h' && this->game()->dungeon()->level()->validMove(m_row, m_col-1) == true) {    // move left
-        m_col = m_col - 1;
+    // TO DO (1) - ensure that my monsters do not attack each other
+    if (direction == 'h') {
+        if (this->game()->dungeon()->level()->validMove(m_row, m_col-1) == true) {              // move left
+            m_col = m_col - 1;
+        }
+        
+        // player->attack()
+        // taketurn() calls move() or attack
+        // actor->takeTurn()  DUE TO POLYMORPHISM WILL CALL THE MOST DERIVED FUNCTION FOR EACH ACTOR
+            // taketurn() figures out which direction each monster should specifically move if (b/c they can smell player)
+            // taketurn() for player would call attack function for player
+        // - move towards player
+        // - if next to player, attack him
+                                                                                                // attack actor to left
     }
-    if (direction == 'l' && this->game()->dungeon()->level()->validMove(m_row, m_col+1) == true) {    // move right
-        m_col = m_col + 1;
+    if (direction == 'l') {
+        if (this->game()->dungeon()->level()->validMove(m_row, m_col+1) == true) {              // move right
+            m_col = m_col + 1;
+        }
+                                                                                                // attack actor to right
     }
-    if (direction == 'k' && this->game()->dungeon()->level()->validMove(m_row-1, m_col) == true) {    // move up
-        m_row = m_row - 1;
+    if (direction == 'k') {
+        if (this->game()->dungeon()->level()->validMove(m_row-1, m_col) == true) {              // move up
+            m_row = m_row - 1;
+        }
+                                                                                                // attack actor above
     }
-    if (direction == 'j' && this->game()->dungeon()->level()->validMove(m_row+1, m_col) == true) {    // move down
-        m_row = m_row + 1;
+    if (direction == 'j') {
+        if (this->game()->dungeon()->level()->validMove(m_row+1, m_col) == true) {              // move down
+            m_row = m_row + 1;
+        }
+                                                                                                // attack actor below
     }
 }
 
@@ -132,21 +153,35 @@ int Actor::getSleepTime()
 // ===================================================
 Monster::Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object)
 : Actor(row, col, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, c, object)
-{
-    
-}
-
+{}
 Monster::~Monster()
 {}
 
-BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
-: Monster(initialRow, initialCol, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, 'B', new Shortsword(0, 0, 'A', game, "short sword", "slashes", 0, 2))
-{
-    // create specific weapon
-}
+Goblin::Goblin(Game* game, int initialRow, int initialCol)
+: Monster(initialRow, initialCol, randInt(15, 20), "Goblin", 1, 3, 1, 0, game, 'G', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
+{}
+Goblin::~Goblin()
+{}
 
+SnakeWomen::SnakeWomen(Game* game, int initialRow, int initialCol)
+: Monster(initialRow, initialCol, randInt(3, 6), "Snake Women", 3, 2, 3, 0, game, 'S', new MagicFangsOfSleep(0, 0, ')', game, "magic fangs of sleep", "strikes", 3, 2))
+{}
+SnakeWomen::~SnakeWomen()
+{}
+
+BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
+: Monster(initialRow, initialCol, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, 'B', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
+{}
 BogeyMen::~BogeyMen()
 {}
+
+Dragon::Dragon(Game* game, int initialRow, int initialCol)
+: Monster(initialRow, initialCol, randInt(20, 25), "Dragon", 4, 4, 4, 0, game, 'D', new LongSword(0, 0, ')', game, "long sword", "swings", 2, 4))
+{}
+Dragon::~Dragon()
+{}
+
+
 
 
 

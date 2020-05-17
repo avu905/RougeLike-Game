@@ -77,8 +77,7 @@ void Game::play()
             if (userInput == 'q')           // quit Game
                 return;
             if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l') { // player moves or attacks
-                m_player->move(userInput);
-                playerMessage = true;
+                m_player->move(userInput, m_player);
             }
             if (userInput == '>') {                                                             // take staircase
                 if ( m_player->getRowNum() == m_dungeon->level()->progressObj()->getRow() && m_player->getColNum() == m_dungeon->level()->progressObj()->getCol() && m_dungeon->level()->progressObj()->getSymbol() == '>')
@@ -109,6 +108,10 @@ void Game::play()
                 // TO DO (1) - move the monsters
                 // TO DO (1) - update computer message if there is a message to be printed out
         // TO DO (1) - finish implementing this ==> computerMessage = m_dungeon->level()->moveMonsters();
+//        for (int i = 0; i < m_dungeon->level()->numberOfMonstersOnlevel(); i++) {
+//            m_dungeon->level()->moveMonsters(); AND moveMonsters will call the move() function for monsters
+              // m_dungeon->level()->moveMonsters()->move('m', m_monsters[i])
+//        }
         
         
     }

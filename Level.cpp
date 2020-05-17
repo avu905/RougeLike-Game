@@ -11,7 +11,7 @@
 #include "Level.h"
 //#include <vector>
 
-Level::Level(Game* game)        // Level Constructor
+Level::Level(Game* game, int curr_level)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
     // TO DO (1) - write algorithm to populate levels with random walls and rooms
@@ -36,9 +36,10 @@ Level::Level(Game* game)        // Level Constructor
     }
     
     // put weapon and scroll objects in level
+        // weapons : short sword, mace, long sword
+        // scrolls : armor, health, strength, dexterity
     int numObjectsInLevel = randInt(2, 3);
     for (int i = 0; i < numObjectsInLevel; i++) {
-        // only make short sword, mace, long sword - only make scroll armor, health, strength, dexterity
         int weaponOrScroll = randInt(1, 2);
         if (weaponOrScroll == 1) {
             int weaponType = randInt(1, 3);
@@ -50,44 +51,32 @@ Level::Level(Game* game)        // Level Constructor
         }
     }
     
-    // TO DO (1) - put monsters in level
-    int numMonstersInLevel = randInt(2, 5 * (m_game->dungeon()->getCurrLevel() + 1) + 1);
+    // put monsters in level
+        // goblin : level 0 - 4
+        // snake woman : level 0 - 4
+        // bogey man : level 2 - 4
+        // dragon : level 3 - 4
+    int numMonstersInLevel = randInt(2, 5 * (curr_level + 1) + 1);
     for (int monstersAdded = 0; monstersAdded < numMonstersInLevel; monstersAdded++) {
-        
-        int currentLevel = m_game->dungeon()->getCurrLevel();
-        
-        if (currentLevel == 0 || currentLevel == 1) {        // goblins, snakewomen
-            // TO DO (1) - change to create goblins and snakewomen, only creates bogeymen right now
-            // addMonster(randInt(0, 1));
+        // int currentLevel = m_game->dungeon()->getCurrLevel();
+        if (curr_level == 0 || curr_level == 1) {        // goblins, snakewomen
+            addMonster(randInt(0, 1));
         }
-        else if (currentLevel == 2) {                        // bogeymen, goblins, snakewomen
-            // TO DO (1) - change to create goblins and snakewomen, only creates bogeymen right now
-            addMonster(0); // TO DO (1) - eventually delte this line
-            //addMonster(randInt(0, 2));
-            
+        else if (curr_level == 2) {                        // goblins, snakewomen, bogeymen
+            addMonster(randInt(0, 2));
         }
-        else if (currentLevel == 3 || currentLevel == 4) {   // dragons, bogeymen, goblins, snakewomen
-            // TO DO (1) - change to create dragons, goblins, and snakewomen, only creates bogeymen right now
-            // addMonster(randInt(0, 3));
-            addMonster(0); // TO DO (1) - eventually delete this line
-            
+        else if (curr_level == 3 || curr_level == 4) {   // goblins, snakewomen, bogeymen, dragons
+            addMonster(randInt(0, 3));
         }
-        // snake woman - all levels
-        // bogey man - level 2 or deeper
-        // dragon - level 3 or deeper
-        // goblin - all levels
     }
-    
-    
-    
     
     // put idol or staircase in level
     int progressionObjectRow = randInt(0, 17);
     int progressionObjectCol = randInt(0, 69);
     freePosition(progressionObjectRow, progressionObjectCol);
-    if (m_game->dungeon()->getCurrLevel() != 4)
+    if (curr_level != 4)
         m_progressionObject = new Staircase(progressionObjectRow, progressionObjectCol, '>', m_game);
-    else if (m_game->dungeon()->getCurrLevel() == 4)
+    else if (curr_level == 4)
         m_progressionObject = new Idol(progressionObjectRow, progressionObjectCol, '&', m_game);
     
     // must create level before player so during construction of level, must know where to place player into level before creating player at that position
@@ -105,8 +94,7 @@ Level::~Level()                     // Level Destructor
 
 void Level::display()
 {
-    // populate m_level with only walls and blank spaces
-    // TO DO (1) - populate m_level with only walls and interactable objects (not including staircases and golden idol)
+    // populate m_level with only walls and interactable objects (not including staircases and golden idol)
     for (int row = 0; row < 18; row++) {
         for (int col = 0; col < 70; col++) {
             if (m_level[row][col] != '#' && m_level[row][col] != '&' && m_level[row][col] != ')')
@@ -125,7 +113,7 @@ void Level::display()
     else if (m_game->dungeon()->getCurrLevel() == 4)
         m_level[m_progressionObject->getRow()][m_progressionObject->getCol()] = '&';
     
-    // TO DO (1) - put monsters into m_level
+    // put monsters into m_level
     for (int i = 0; i < m_monsters.size(); i++) {
         m_level[m_monsters[i]->getRowNum()][m_monsters[i]->getColNum()] = m_monsters[i]->getChar() ;
     }
@@ -214,7 +202,7 @@ bool Level::pickUpObject(string& MessageToPrint)
         return true;    // TO DO (1) - should I return true here ?????
     }
     
-    // TO DO (1) - should I return falsehere or should I return true
+    // TO DO (1) - should I return false here or should I return true
     return false;
 }
 
@@ -248,15 +236,15 @@ void Level::addMonster(int monsterType)
     int initialMonsterCol = randInt(0, 69);
     freePosition(initialMonsterRow, initialMonsterCol);
     if (monsterType == 0) {
-        m_monsters.push_back(new BogeyMen(m_game, initialMonsterRow, initialMonsterCol));
+        m_monsters.push_back(new Goblin(m_game, initialMonsterRow, initialMonsterCol));
     }
     else if (monsterType == 1) {
-        // make snakewoemn
+        m_monsters.push_back(new SnakeWomen(m_game, initialMonsterRow, initialMonsterCol));
     }
     else if (monsterType == 2) {
-        // make dragon
+        m_monsters.push_back(new BogeyMen(m_game, initialMonsterRow, initialMonsterCol));
     }
     else if (monsterType == 3) {
-        // make goblin
+        m_monsters.push_back(new Dragon(m_game, initialMonsterRow, initialMonsterCol));
     }
 }
