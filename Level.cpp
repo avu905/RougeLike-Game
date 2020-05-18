@@ -131,7 +131,7 @@ void Level::display()
     }
     
     // print out stats
-    cout << "Dungeon Level: " << m_game->dungeon()->getCurrLevel() << ", Hit points: " << m_player->getHitPoints() << ", Armor: " << m_player->getArmor() << ", Strength: " << m_player->getStrength() << ", Dexterity: " << m_player->getDexterity() << endl;
+    cout << "Dungeon Level: " << m_game->dungeon()->getCurrLevel() << ", Hit points: " << m_player->getHitPoints() << ", Armor: " << m_player->getArmor() << ", Strength: " << m_player->getStrength() << ", Dexterity: " << m_player->getDexterity() << endl << endl;
 }
 
 bool Level::validMove(int row, int col)
@@ -169,7 +169,7 @@ bool Level::pickUpObject(string& messageToPrint)
 {
     // pick up the idol - win game and exit
     if (m_player->getRowNum() == m_progressionObject->getRow() && m_player->getColNum() == m_progressionObject->getCol() && m_progressionObject->getSymbol() == '&') {
-        cout << endl << "You pick up the golden idol" << endl << "Congratulations, you won!" << endl << "Press q to exit the game.";
+        cout << endl << "You pick up the golden idol" << endl << "Congratulations, you won!" << endl << "Press q to exit game.";
         char quit;
         while ((quit = getCharacter()) != 'q')
             {}
@@ -192,7 +192,7 @@ bool Level::pickUpObject(string& messageToPrint)
                     messageToPrint += "a scroll called ";
                     messageToPrint += scrollPointer->getName();
                 }
-                m_player->addObjectToInventory(m_objects[i]);       // add object to player's m_inventory
+                m_player->addObjectToInventory(m_objects[i]);         // add object to player's m_inventory
                 m_objects.erase(m_objects.begin() + i);               // erase object from levels m_objects vector (level no longer has access to that object)
             }
         }
@@ -252,6 +252,7 @@ void Level::addMonster(int monsterType)
 
 void Level::clearDeadMonsters()
 {
+    // TO DO (1) - fix : when player deals final blow to monster, monster doesn't die immediatley. The monster instead can attack the player again and then after the monster is erased
     for (int i = 0; i < m_monsters.size(); i++) {
         if (m_monsters[i]->getHitPoints() <= 0) {
             // TO DO (1) - monsters should drop an item if they die by calling drop item function
@@ -278,6 +279,7 @@ void Level::monsterDropItem(Monster* monster)
         if (chanceOfDropping == true)
             m_objects.push_back(new MagicFangsOfSleep(monster->getRowNum(), monster->getColNum(), ')', m_game, "magic fangs of sleep", "strikes", 3, 2));
     }
+    // TO DO (1) - sometimes dragon will drop a weapon ?????
     else if (monster->getChar() == 'D') {
         if (isObjectAtSpot(monster) == true)
             return;
@@ -320,4 +322,11 @@ bool Level::isObjectAtSpot(Monster* monster)
     
     // there is not object at that position
     return false;
+}
+
+void Level::moveMonsters(char userInput, bool& message, string& messageToPrint)
+{
+    for (int i = 0; i < m_monsters.size(); i++) {
+        m_monsters[i]->takeTurn(userInput, m_monsters[i], message, messageToPrint);
+    }
 }

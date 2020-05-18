@@ -122,6 +122,7 @@ void Actor::attack(Actor *attacker, Actor *defender, bool& message, string& mess
     // TO DO (1) - account for sleep if attacker is attacking with magic fangs of sleep - magic fangs of sleep must increase sleep time of defender
     // TO DO (1) - if defender is already asleep make sure to update sleep time correctly
     // TO DO (1) - update messageToPrint string too if defender is put to sleep
+    // TO DO (1) - when monster can attack player, the message does not print out when the player attacks the monster back
     
     Weapon* attackerWeapon = dynamic_cast<Weapon*>(attacker->getInteractableObject());
     
@@ -134,15 +135,25 @@ void Actor::attack(Actor *attacker, Actor *defender, bool& message, string& mess
         int damagePoints = randInt(0, attacker->getStrength() + attackerWeapon->getWeaponDamage() - 1);
         defender->m_hitpoints = defender->m_hitpoints - damagePoints;
         message = true;
-        messageToPrint = attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName();
+        messageToPrint += attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName();
         if (defender->m_hitpoints > 0)
-            messageToPrint += " and hits.";
+            messageToPrint += " and hits.\n";
         else if (defender->m_hitpoints <= 0)
-            messageToPrint += " dealing a final blow.";
+            messageToPrint += " dealing a final blow.\n";
     }
     else {
         message = true;
-        messageToPrint = attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName() + " and misses.";
+        messageToPrint += attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName() + " and misses.\n";
+    }
+}
+
+void Actor::heal()
+{
+    // TO DO (1) - as of now, the heal() function only works for players, ensure that it works for dragons as well
+    bool actorWillHeal = trueWithProbability(0.10);
+    if (actorWillHeal == true) {
+        if (this->m_hitpoints < this->m_maxHitpoints)
+            m_hitpoints++;
     }
 }
 
@@ -187,6 +198,8 @@ Monster::Monster(int row, int col, int hitpoints, string name, int armorpoints, 
 Monster::~Monster()
 {}
 
+// TO DO (1) - ensure that monsters do not attack each other in each monster's takeTurn() function
+
 Goblin::Goblin(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(15, 20), "Goblin", 1, 3, 1, 0, game, 'G', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
 {}
@@ -194,7 +207,27 @@ Goblin::~Goblin()
 {}
 void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // TO DO (1) - finish implementing goblin's takeTurn() function
+    // defender is always the player when bogeymen attack
+    Actor* defender = game()->player();
     
+    // if player is next to the dragon, attack player
+    if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() - 1 == defender->getColNum()) {       // bogey men attack to left
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() + 1 == defender->getColNum()) {  // bogey men attack to right
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() - 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack above
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() + 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack below
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
 }
 
 SnakeWomen::SnakeWomen(Game* game, int initialRow, int initialCol)
@@ -204,7 +237,56 @@ SnakeWomen::~SnakeWomen()
 {}
 void SnakeWomen::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // defender is always the player when bogeymen attack
+    Actor* defender = game()->player();
     
+    // if player is next to the snakewoemn, attack player
+    if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() - 1 == defender->getColNum()) {       // bogey men attack to left
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() + 1 == defender->getColNum()) {  // bogey men attack to right
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() - 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack above
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() + 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack below
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    
+    // TO DO (1) - if snakewomen is within 3 steps then move closer to player
+    if (defender->getRowNum() >= attacker->getRowNum() - 3 && defender->getRowNum() <= attacker->getRowNum() + 3 && defender->getColNum() >= attacker->getColNum() - 3 && defender->getColNum() <= attacker->getColNum() + 3) {
+
+        int initialBogeyMenRow = attacker->getRowNum();
+        int initialBogeyMenCol = attacker->getColNum();
+        
+        if (attacker->getColNum() - defender->getColNum() <= 3 && attacker->getColNum() - defender->getColNum() > 0) {
+            attacker->move('h');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+        else if (attacker->getColNum() - defender->getColNum() >= -3 && attacker->getColNum() - defender->getColNum() < 0) {
+            attacker->move('l');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+        else if (attacker->getRowNum() - defender->getRowNum() <= 3 && attacker->getRowNum() - defender->getRowNum() > 0) {
+            attacker->move('k');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+        else if (attacker->getRowNum() - defender->getRowNum() >= -3 && attacker->getRowNum() - defender->getRowNum() < 0) {
+            attacker->move('j');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+    }
+    
+    // no code needed for snakewomen to do nothing if snakewomen is too far to "smell" player
 }
 
 BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
@@ -214,7 +296,56 @@ BogeyMen::~BogeyMen()
 {}
 void BogeyMen::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // defender is always the player when bogeymen attack
+    Actor* defender = game()->player();
     
+    // if player is next to bogeymen, attack player
+    if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() - 1 == defender->getColNum()) {       // bogey men attack to left
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() + 1 == defender->getColNum()) {  // bogey men attack to right
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() - 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack above
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() + 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack below
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    
+    // TO DO (1) - if bogeymen is within 5 steps then move closer to player
+    if (defender->getRowNum() >= attacker->getRowNum() - 5 && defender->getRowNum() <= attacker->getRowNum() + 5 && defender->getColNum() >= attacker->getColNum() - 5 && defender->getColNum() <= attacker->getColNum() + 5) {
+
+        int initialBogeyMenRow = attacker->getRowNum();
+        int initialBogeyMenCol = attacker->getColNum();
+        
+        if (attacker->getColNum() - defender->getColNum() <= 5 && attacker->getColNum() - defender->getColNum() > 0) {
+            attacker->move('h');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+        else if (attacker->getColNum() - defender->getColNum() >= -5 && attacker->getColNum() - defender->getColNum() < 0) {
+            attacker->move('l');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+        else if (attacker->getRowNum() - defender->getRowNum() <= 5 && attacker->getRowNum() - defender->getRowNum() > 0) {
+            attacker->move('k');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+        else if (attacker->getRowNum() - defender->getRowNum() >= -5 && attacker->getRowNum() - defender->getRowNum() < 0) {
+            attacker->move('j');
+            if (initialBogeyMenRow != attacker->getRowNum() && initialBogeyMenCol != attacker->getColNum())
+                return;
+        }
+    }
+    
+    // no code needed for bogeymen to do nothing if bogeymen is too far to "smell" player
 }
 
 Dragon::Dragon(Game* game, int initialRow, int initialCol)
@@ -224,7 +355,27 @@ Dragon::~Dragon()
 {}
 void Dragon::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // defender is always the player when bogeymen attack
+    Actor* defender = game()->player();
     
+    // TO DO (1) - after dragon does attack, should it return immediately ????? same question for bogeymen, snakewomen, goblin
+    // if player is next to the dragon, attack player
+    if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() - 1 == defender->getColNum()) {       // bogey men attack to left
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() + 1 == defender->getColNum()) {  // bogey men attack to right
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() - 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack above
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    else if (attacker->getRowNum() == defender->getRowNum() + 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack below
+        attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
 }
 
 // ===================================================
@@ -311,10 +462,10 @@ bool Player::wieldWeapon(string& MessageToPrint)
     Weapon* validWeapon = dynamic_cast<Weapon*>(m_inventory[weaponToWield-'a']);
     if (validWeapon != nullptr ) {
         this->holdInitialObject(validWeapon);
-        MessageToPrint = "You are wielding " + this->inventoryObjectNameAtIndex(weaponToWield - 'a');
+        MessageToPrint = "You are wielding " + this->inventoryObjectNameAtIndex(weaponToWield - 'a') + "\n";
     }
     else if (validWeapon == nullptr) {
-        MessageToPrint = "You can't wield " + this->inventoryObjectNameAtIndex(weaponToWield - 'a');
+        MessageToPrint = "You can't wield " + this->inventoryObjectNameAtIndex(weaponToWield - 'a') + "\n";
     }
     return true;
 }
@@ -348,28 +499,28 @@ bool Player::readScroll(string &MessageToPrint)
             int increase = validScroll->getEnhance();
             if (this->getArmor() + increase <= this->getMaxArmorPoints()) {
                 this->increaseArmorPoints(increase);
-                MessageToPrint += "Your armor glows blue.";
+                MessageToPrint += "Your armor glows blue.\n";
             }
         }
         else if (validScroll->getScrollType() == 'H') {
             int increase = validScroll->getEnhance();
             if (this->getMaxHitPoints() + increase <= 99) {
                 this->increaseMaxHitPoints(validScroll->getEnhance());
-                MessageToPrint += "You feel your heart beating stronger.";
+                MessageToPrint += "You feel your heart beating stronger.\n";
             }
         }
         else if (validScroll->getScrollType() == 'S') {
             int increase = validScroll->getEnhance();
             if (this->getStrength() + increase <= this->getMaxStrengthPoints()) {
                 this->increaseStrengthPoints(validScroll->getEnhance());
-                MessageToPrint += "Your muscles bulge.";
+                MessageToPrint += "Your muscles bulge.\n";
             }
         }
         else if (validScroll->getScrollType() == 'D') {
             int increase = validScroll->getEnhance();
             if (this->getDexterity() + increase <= this->getmaxDexterityPoints()) {
                 this->increaseDexterityPoints(validScroll->getEnhance());
-                MessageToPrint += "You feel like less of a klutz.";
+                MessageToPrint += "You feel like less of a klutz.\n";
             }
         }
         // TO DO (1) - make sure reading a teleportation scroll works correctly - seems to be working correctly
@@ -378,13 +529,13 @@ bool Player::readScroll(string &MessageToPrint)
             int newColPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value
             this->game()->dungeon()->level()->freePosition(newRowPosition, newColPosition);
             this->newPlayerPositionByTeleportationScroll(newRowPosition, newColPosition);
-            MessageToPrint =+ "You feel your body wrenched in space and time.";
+            MessageToPrint += "You feel your body wrenched in space and time.\n";
         }
         delete m_inventory[scrollToRead - 'a'];
         m_inventory.erase(m_inventory.begin()+(scrollToRead - 'a'));
     }
     else if (validScroll == nullptr) {
-        MessageToPrint = "You can't read a " + this->inventoryObjectNameAtIndex(scrollToRead - 'a');
+        MessageToPrint = "You can't read a " + this->inventoryObjectNameAtIndex(scrollToRead - 'a') + "\n";
     }
     return true;
 }
@@ -396,7 +547,7 @@ void Player::takeTurn(char userInput, Actor* attacker, bool& message, string& me
     if (userInput == 'h') {                 // move or attack left
         if (isMonsterAtPosition(attacker, defender, attacker->getRowNum(), attacker->getColNum() - 1) == true) {
             // TO DO (1) - if statement and call attack if defender is not a nullptr
-            // TO DO (1) - modify names of the monsters to "snakewoman" and "bogeyman" and other things so prints out "at player" and "at THE monster"
+            // TO DO (1) - modify names of the monsters to "snake woman" and "bogey man" and other things so prints out "at player" and "at THE monster"
             attacker->attack(attacker, defender, message, messageToPrint);
         }
         else
@@ -423,5 +574,4 @@ void Player::takeTurn(char userInput, Actor* attacker, bool& message, string& me
         else
             attacker->move(userInput);
     }
-    // TO DO (1) - ensure that monsters do not attack each other
 }

@@ -44,6 +44,7 @@ public:
     virtual void playerCheat();
     virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint) = 0; // determines if actor should move or attack
     virtual bool isMonsterAtPosition (Actor* attacker, Actor*& defender, int row, int col);            // determines if there is a monster at a position (attacker is technically player)
+    virtual void heal();
     
     // accessors
     Game* game();

@@ -44,6 +44,8 @@ public:
     void clearDeadMonsters();                              // clear dead monsters from level
     void monsterDropItem(Monster* monster);                // monster will drop an item - only called clearDearmonsters() after a monster dies
     bool isObjectAtSpot(Monster* monster);                 // checks if there is an object at a certain position
+    void moveMonsters(char userInput, bool& message, string& messageToPrint);        // moves all monsters in level after player's turn
+                                                                                     // TO DO (1) - does moveMonsters() need char userInput as parameter?
     
 private:
     char m_level[18][70];                           // level layout
