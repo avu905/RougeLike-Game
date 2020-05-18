@@ -18,10 +18,11 @@ using namespace std;
 
 // Implement these and other Game member functions you may have added.
 
-Game::Game(int goblinSmellDistance)     // Game Constructor
+Game::Game(int goblinSmellDistance)                    // Game Constructor
 {
     m_dungeon = new Dungeon(this);                     // create dungeon
     m_player = m_dungeon->level()->createPlayer();     // create player
+    m_goblinSmellDistance = goblinSmellDistance;
 }
 
 Game::~Game()
@@ -38,6 +39,11 @@ Player* Game::player()
 Dungeon* Game::dungeon()
 {
     return m_dungeon;
+}
+
+int Game::getGoblinSmellDistance()
+{
+    return m_goblinSmellDistance;
 }
 
 
@@ -105,6 +111,8 @@ void Game::play()
         // player is asleep
         if (m_player->getSleepTime() != 0)
             m_player->decreaseSleep();
+        
+        // TO DO (1) - update m_level with row and position of player and erase old row and position of player after player's turn so monsters can move correctly
         
         // TO DO (1) - loop through and if any monsters are dead print out applicable message
         // TO DO (1) - should clearDeadMonsters() come before moveMonsters() since the player can kill a monster?

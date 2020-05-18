@@ -97,7 +97,7 @@ void Level::display()
     // TO DO (1) - is the if statement correct - should it be "if (m_level[row][col] != '#' && m_level[row][col] != '?' && m_level[row][col] != ')')"
     for (int row = 0; row < 18; row++) {
         for (int col = 0; col < 70; col++) {
-            if (m_level[row][col] != '#' && m_level[row][col] != '&' && m_level[row][col] != ')')
+            if (m_level[row][col] != '#' && m_level[row][col] != '?' && m_level[row][col] != ')')
                 m_level[row][col] = ' ';
         }
     }
@@ -329,4 +329,39 @@ void Level::moveMonsters(char userInput, bool& message, string& messageToPrint)
     for (int i = 0; i < m_monsters.size(); i++) {
         m_monsters[i]->takeTurn(userInput, m_monsters[i], message, messageToPrint);
     }
+}
+
+int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int depth)
+{
+    // base case (1) - start position is where a wall or monster is (i.e. no path)
+    if (levelCopy[startRow][startCol] == '#' || levelCopy[startRow][startCol] ==  'B' || levelCopy[startRow][startCol] == 'S' || levelCopy[startRow][startCol] == 'D' || levelCopy[startRow][startCol] == 'G')
+        return -1;
+    
+    // base case (2) - found length from start to end position
+    if (startRow == endRow && startCol == endCol)
+        return depth;
+    
+    // mark this position as searched
+    levelCopy[startRow][startCol] = '~';
+    
+    // TO DO (1) - is this recursive call correct ?????
+    // recursive call on each direction
+    if (levelCopy[startRow-1][startCol] == ' ' || levelCopy[startRow-1][startCol] == '>' || levelCopy[startRow-1][startCol] == '&' || levelCopy[startRow-1][startCol] == ')' || levelCopy[startRow-1][startCol] == '?') {
+        depth = (findPath(levelCopy, startRow-1, startCol, endRow, endCol, depth+1));
+        return depth;
+    }
+    if (levelCopy[startRow+1][startCol] == ' ' || levelCopy[startRow+1][startCol] == '>' || levelCopy[startRow+1][startCol] == '&' || levelCopy[startRow+1][startCol] == ')' || levelCopy[startRow+1][startCol] == '?') {
+        depth = (findPath(levelCopy, startRow+1, startCol, endRow, endCol, depth+1));
+        return depth;
+    }
+    if (levelCopy[startRow][startCol-1] == ' ' || levelCopy[startRow][startCol-1] == '>' || levelCopy[startRow][startCol-1] == '&' || levelCopy[startRow][startCol-1] == ')' || levelCopy[startRow][startCol-1] == '?') {
+        depth = (findPath(levelCopy, startRow, startCol-1, endRow, endCol, depth+1));
+        return depth;
+    }
+    if (levelCopy[startRow][startCol+1] == ' ' || levelCopy[startRow][startCol+1] == '>' || levelCopy[startRow][startCol+1] == '&' || levelCopy[startRow][startCol+1] == ')' || levelCopy[startRow][startCol+1] == '?') {
+        depth = (findPath(levelCopy, startRow, startCol+1, endRow, endCol, depth+1));
+        return depth;
+    }
+    
+    return -9; // TO DO (1) - it should never return -1 ?????
 }

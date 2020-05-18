@@ -30,9 +30,11 @@ public:
     // accessors
     Dungeon* dungeon();                     // access dungeon
     Player* player();                       // access player
+    int getGoblinSmellDistance();
 private:
     Dungeon* m_dungeon;                     // pointer to dungeon
     Player* m_player;                       // pointer to player
+    int m_goblinSmellDistance;
 };
 
 #endif // GAME_INCLUDED

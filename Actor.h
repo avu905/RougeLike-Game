@@ -11,6 +11,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 
 #include "Dungeon.h"
 #include "Game.h"
@@ -18,7 +20,6 @@
 #include "Level.h"
 #include "utilities.h"
 
-#include<string>
 
 using namespace std;
 

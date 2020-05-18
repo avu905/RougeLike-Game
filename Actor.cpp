@@ -207,11 +207,10 @@ Goblin::~Goblin()
 {}
 void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
-    // TO DO (1) - finish implementing goblin's takeTurn() function
-    // defender is always the player when bogeymen attack
+    // defender is always the player when goblin attacks
     Actor* defender = game()->player();
     
-    // if player is next to the dragon, attack player
+    // if player is next to the goblin, attack player
     if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() - 1 == defender->getColNum()) {       // bogey men attack to left
         attacker->attack(attacker, defender, message, messageToPrint);
         return;
@@ -226,6 +225,56 @@ void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& me
     }
     else if (attacker->getRowNum() == defender->getRowNum() + 1 && attacker->getColNum() == defender->getColNum()) {  // bogey men attack below
         attacker->attack(attacker, defender, message, messageToPrint);
+        return;
+    }
+    
+    // create copy of m_level to pass into goblin path algorithm
+    char levelCopy [18][70];
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 70; col++) {
+            levelCopy[row][col] = game()->dungeon()->level()->getLevelChar(row, col);
+        }
+    }
+
+    // call goblin path algorithm 4 times to find the path length starting from that direction : returns -1 if there is no path by starting at that direction
+    int pathLengthIfGoLeft = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum(), attacker->getColNum()-1, defender->getRowNum(), defender->getColNum(), 0);
+    int pathLengthIfGoRight = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum(), attacker->getColNum()+1, defender->getRowNum(), defender->getColNum(), 0);
+    int pathLengthIfGoUp = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum()-1, attacker->getColNum(), defender->getRowNum(), defender->getColNum(), 0);
+    int pathLengthIfGoDown = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum()+1, attacker->getColNum(), defender->getRowNum(), defender->getColNum(), 0);
+    
+    int goblinSmellDistance = game()->getGoblinSmellDistance();
+    
+    // TO DO (1) - is this if statement correct ?????
+    // if there is no path going in that direction (i.e. -1) or a path going that direction is greater than goblin smell distance, goblin does not move at all
+    if ((pathLengthIfGoLeft == -1 || pathLengthIfGoLeft > goblinSmellDistance) && (pathLengthIfGoRight == -1 || pathLengthIfGoRight > goblinSmellDistance) && (pathLengthIfGoUp == -1 || pathLengthIfGoUp > goblinSmellDistance) && (pathLengthIfGoDown == -1 || pathLengthIfGoDown > goblinSmellDistance))
+        return;
+    
+    // TO DO (1) - choose smallest path length and go in that direction
+    // TO DO (1) - push into vector all path lengths that are not -1. then choose the smallest path length from vector and call direction based on that path length
+    // determine which direction is the shortest path
+    int differentPathLengthsArr [4] = {pathLengthIfGoLeft, pathLengthIfGoRight, pathLengthIfGoUp, pathLengthIfGoDown};
+    vector<int> differentPahtLengthsVector;
+    for (int i = 0; i < 4; i++) {
+        if (differentPathLengthsArr[i] != -1)
+            differentPahtLengthsVector.push_back(differentPathLengthsArr[i]);
+    }
+    int shortestPath = *min_element(differentPahtLengthsVector.begin(), differentPahtLengthsVector.end());
+    
+    // move in the direction of the shortest path
+    if (shortestPath == pathLengthIfGoLeft) {
+        attacker->move('h');
+        return;
+    }
+    else if (shortestPath == pathLengthIfGoRight) {
+        attacker->move('l');
+        return;
+    }
+    else if (shortestPath == pathLengthIfGoUp) {
+        attacker->move('k');
+        return;
+    }
+    else if (shortestPath == pathLengthIfGoDown) {
+        attacker->move('j');
         return;
     }
 }
@@ -285,7 +334,6 @@ void SnakeWomen::takeTurn(char userInput, Actor* attacker, bool& message, string
                 return;
         }
     }
-    
     // no code needed for snakewomen to do nothing if snakewomen is too far to "smell" player
 }
 
