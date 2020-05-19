@@ -331,37 +331,49 @@ void Level::moveMonsters(char userInput, bool& message, string& messageToPrint)
     }
 }
 
-int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int depth)
+int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength)
 {
-    // base case (1) - start position is where a wall or monster is (i.e. no path)
-    if (levelCopy[startRow][startCol] == '#' || levelCopy[startRow][startCol] ==  'B' || levelCopy[startRow][startCol] == 'S' || levelCopy[startRow][startCol] == 'D' || levelCopy[startRow][startCol] == 'G')
-        return -1;
-    
-    // base case (2) - found length from start to end position
-    if (startRow == endRow && startCol == endCol)
-        return depth;
+    // TO DO (1) - finish recursive algorithm
     
     // mark this position as searched
     levelCopy[startRow][startCol] = '~';
     
-    // TO DO (1) - is this recursive call correct ?????
+    // base case (1) - found length from start to end position. Return length
+    if (startRow == endRow && startCol == endCol)
+        return pathLength;
+    
+    // base case (2) - if goblin is too far to smell, don't move goblin
+    if (pathLength > m_game->getGoblinSmellDistance())
+        return -1;
+    
+    // base case (3) - invalid starting position
+    if (levelCopy[startRow][startCol] == '#' || levelCopy[startRow][startCol] ==  'B' || levelCopy[startRow][startCol] == 'S' || levelCopy[startRow][startCol] == 'D' || levelCopy[startRow][startCol] == 'G' || levelCopy[startRow][startCol] == '~')
+        return -1;
+    
+    int pathLengthIfGoLeft = 0;
+    int pathLengthIfGoRight = 0;
+    int pathLengthIfGoUp = 0;
+    int pathLengthIfGoDown = 0;
+    
     // recursive call on each direction
-    if (levelCopy[startRow-1][startCol] == ' ' || levelCopy[startRow-1][startCol] == '>' || levelCopy[startRow-1][startCol] == '&' || levelCopy[startRow-1][startCol] == ')' || levelCopy[startRow-1][startCol] == '?') {
-        depth = (findPath(levelCopy, startRow-1, startCol, endRow, endCol, depth+1));
-        return depth;
+    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1);
+    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1);
+    pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1);
+    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1);
+    
+    // return optimal path direction
+    if  (pathLengthIfGoUp <= pathLengthIfGoDown && pathLengthIfGoUp <= pathLengthIfGoLeft && pathLengthIfGoUp <= pathLengthIfGoRight) {
+        return pathLengthIfGoUp;
     }
-    if (levelCopy[startRow+1][startCol] == ' ' || levelCopy[startRow+1][startCol] == '>' || levelCopy[startRow+1][startCol] == '&' || levelCopy[startRow+1][startCol] == ')' || levelCopy[startRow+1][startCol] == '?') {
-        depth = (findPath(levelCopy, startRow+1, startCol, endRow, endCol, depth+1));
-        return depth;
+    else if (pathLengthIfGoDown <= pathLengthIfGoLeft && pathLengthIfGoDown <= pathLengthIfGoRight) {
+        return pathLengthIfGoDown;
     }
-    if (levelCopy[startRow][startCol-1] == ' ' || levelCopy[startRow][startCol-1] == '>' || levelCopy[startRow][startCol-1] == '&' || levelCopy[startRow][startCol-1] == ')' || levelCopy[startRow][startCol-1] == '?') {
-        depth = (findPath(levelCopy, startRow, startCol-1, endRow, endCol, depth+1));
-        return depth;
+    else if (pathLengthIfGoLeft <= pathLengthIfGoRight) {
+        return pathLengthIfGoLeft;
     }
-    if (levelCopy[startRow][startCol+1] == ' ' || levelCopy[startRow][startCol+1] == '>' || levelCopy[startRow][startCol+1] == '&' || levelCopy[startRow][startCol+1] == ')' || levelCopy[startRow][startCol+1] == '?') {
-        depth = (findPath(levelCopy, startRow, startCol+1, endRow, endCol, depth+1));
-        return depth;
+    else {
+        return pathLengthIfGoRight;
     }
     
-    return -9; // TO DO (1) - it should never return -1 ?????
+    return -9;
 }

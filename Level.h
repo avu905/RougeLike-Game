@@ -45,7 +45,7 @@ public:
     bool isObjectAtSpot(Monster* monster);                 // checks if there is an object at a certain position
     void moveMonsters(char userInput, bool& message, string& messageToPrint);        // moves all monsters in level after player's turn
                                                                                      // TO DO (1) - does moveMonsters() need char userInput as parameter?
-    int findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int depth);
+    int findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength);
     
     
 private:

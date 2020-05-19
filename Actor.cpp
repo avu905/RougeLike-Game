@@ -235,32 +235,27 @@ void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& me
             levelCopy[row][col] = game()->dungeon()->level()->getLevelChar(row, col);
         }
     }
-
+    
     // call goblin path algorithm 4 times to find the path length starting from that direction : returns -1 if there is no path by starting at that direction
     int pathLengthIfGoLeft = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum(), attacker->getColNum()-1, defender->getRowNum(), defender->getColNum(), 0);
     int pathLengthIfGoRight = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum(), attacker->getColNum()+1, defender->getRowNum(), defender->getColNum(), 0);
     int pathLengthIfGoUp = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum()-1, attacker->getColNum(), defender->getRowNum(), defender->getColNum(), 0);
     int pathLengthIfGoDown = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum()+1, attacker->getColNum(), defender->getRowNum(), defender->getColNum(), 0);
-    
-    int goblinSmellDistance = game()->getGoblinSmellDistance();
-    
-    // TO DO (1) - is this if statement correct ?????
-    // if there is no path going in that direction (i.e. -1) or a path going that direction is greater than goblin smell distance, goblin does not move at all
-    if ((pathLengthIfGoLeft == -1 || pathLengthIfGoLeft > goblinSmellDistance) && (pathLengthIfGoRight == -1 || pathLengthIfGoRight > goblinSmellDistance) && (pathLengthIfGoUp == -1 || pathLengthIfGoUp > goblinSmellDistance) && (pathLengthIfGoDown == -1 || pathLengthIfGoDown > goblinSmellDistance))
-        return;
-    
-    // TO DO (1) - choose smallest path length and go in that direction
-    // TO DO (1) - push into vector all path lengths that are not -1. then choose the smallest path length from vector and call direction based on that path length
-    // determine which direction is the shortest path
+
+    // sort through different path lengths
     int differentPathLengthsArr [4] = {pathLengthIfGoLeft, pathLengthIfGoRight, pathLengthIfGoUp, pathLengthIfGoDown};
-    vector<int> differentPahtLengthsVector;
+    vector<int> differentPathLengthsVector;
     for (int i = 0; i < 4; i++) {
         if (differentPathLengthsArr[i] != -1)
-            differentPahtLengthsVector.push_back(differentPathLengthsArr[i]);
+            differentPathLengthsVector.push_back(differentPathLengthsArr[i]);
     }
-    int shortestPath = *min_element(differentPahtLengthsVector.begin(), differentPahtLengthsVector.end());
+    
+    // goblin is too far to smell, so goblin does nothing (moving in that direction is not an option)
+    if (differentPathLengthsVector.empty() == true)
+        return;
     
     // move in the direction of the shortest path
+    int shortestPath = *min_element(differentPathLengthsVector.begin(), differentPathLengthsVector.end());
     if (shortestPath == pathLengthIfGoLeft) {
         attacker->move('h');
         return;
