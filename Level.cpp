@@ -331,10 +331,8 @@ void Level::moveMonsters(char userInput, bool& message, string& messageToPrint)
     }
 }
 
-int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength)
+int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength, char dirEntered)
 {
-    // TO DO (1) - optimize recursive algorithm - don't go backwards
-    
     // base case (1) - found length from start to end position. Return length
     if (startRow == endRow && startCol == endCol)
         return pathLength;
@@ -353,10 +351,34 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     int pathLengthIfGoDown = 0;
     
     // recursive call on each direction
-    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1);
-    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1);
-    pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1);
-    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1);
+    
+    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'L');
+    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'L');
+    pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'L');
+    
+    // TO DO (1) - optimize recursive algorithm - don't go backwards
+//    if (dirEntered == 'D') {
+//        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+//        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+//        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+//    }
+//    else if (dirEntered == 'U') {
+//        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+//        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+//        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+//    }
+//    else if (dirEntered == 'L') {
+//        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+//        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+//        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+//    }
+//
+//    else if (dirEntered == 'R') {
+//        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+//        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+//        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+//    }
     
     // return optimal path direction
     if  (pathLengthIfGoUp <= pathLengthIfGoDown && pathLengthIfGoUp <= pathLengthIfGoLeft && pathLengthIfGoUp <= pathLengthIfGoRight) {
