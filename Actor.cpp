@@ -246,7 +246,7 @@ void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& me
     int differentPathLengthsArr [4] = {pathLengthIfGoLeft, pathLengthIfGoRight, pathLengthIfGoUp, pathLengthIfGoDown};
     vector<int> differentPathLengthsVector;
     for (int i = 0; i < 4; i++) {
-        if (differentPathLengthsArr[i] != -1)
+        if (differentPathLengthsArr[i] != 10000)
             differentPathLengthsVector.push_back(differentPathLengthsArr[i]);
     }
     
