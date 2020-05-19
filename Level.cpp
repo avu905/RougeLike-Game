@@ -333,22 +333,19 @@ void Level::moveMonsters(char userInput, bool& message, string& messageToPrint)
 
 int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength)
 {
-    // TO DO (1) - finish recursive algorithm
+    // TO DO (1) - optimize recursive algorithm - don't go backwards
     
     // base case (1) - found length from start to end position. Return length
     if (startRow == endRow && startCol == endCol)
         return pathLength;
     
     // base case (2) - invalid starting position (start on wall, monster, or position that has already been searched)
-    if (levelCopy[startRow][startCol] == '#' || levelCopy[startRow][startCol] ==  'B' || levelCopy[startRow][startCol] == 'S' || levelCopy[startRow][startCol] == 'D' || levelCopy[startRow][startCol] == 'G' || levelCopy[startRow][startCol] == '~')
-        return 100000;
+    if (levelCopy[startRow][startCol] != ' ' && levelCopy[startRow][startCol] !=  '>' && levelCopy[startRow][startCol] != '&' && levelCopy[startRow][startCol] != ')' && levelCopy[startRow][startCol] != '?')
+        return 10000;
     
     // base case (3) - if goblin is too far to smell, don't move goblin
     if (pathLength > m_game->getGoblinSmellDistance())
-        return 100000;
-    
-    // mark this position as searched
-    levelCopy[startRow][startCol] = '~';
+        return 10000;
     
     int pathLengthIfGoLeft = 0;
     int pathLengthIfGoRight = 0;
@@ -374,6 +371,4 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     else {
         return pathLengthIfGoRight;
     }
-    
-    return -9;
 }

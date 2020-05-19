@@ -236,10 +236,25 @@ void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& me
         }
     }
     
-    // call goblin path algorithm 4 times to find the path length starting from that direction : returns -1 if there is no path by starting at that direction
+    // call goblin path algorithm 4 times to find the path length starting from that direction
     int pathLengthIfGoLeft = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum(), attacker->getColNum()-1, defender->getRowNum(), defender->getColNum(), 0);
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 70; col++) {
+            levelCopy[row][col] = game()->dungeon()->level()->getLevelChar(row, col);
+        }
+    }
     int pathLengthIfGoRight = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum(), attacker->getColNum()+1, defender->getRowNum(), defender->getColNum(), 0);
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 70; col++) {
+            levelCopy[row][col] = game()->dungeon()->level()->getLevelChar(row, col);
+        }
+    }
     int pathLengthIfGoUp = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum()-1, attacker->getColNum(), defender->getRowNum(), defender->getColNum(), 0);
+    for (int row = 0; row < 18; row++) {
+        for (int col = 0; col < 70; col++) {
+            levelCopy[row][col] = game()->dungeon()->level()->getLevelChar(row, col);
+        }
+    }
     int pathLengthIfGoDown = game()->dungeon()->level()->findPath(levelCopy, attacker->getRowNum()+1, attacker->getColNum(), defender->getRowNum(), defender->getColNum(), 0);
 
     // sort through different path lengths
