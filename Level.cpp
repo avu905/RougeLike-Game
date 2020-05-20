@@ -14,6 +14,75 @@
 Level::Level(Game* game, int curr_level)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
+//    // generate level completely with walls
+//    for (int i = 0; i < 18; i++) {
+//        for (int j = 0; j < 70; j++) {
+//            m_level[i][j] = '#';
+//        }
+//    }
+//
+//    int numRooms = 3;
+//    //int numRooms = randInt(3, 5);
+//
+//    if (numRooms == 3) {
+//        int roomOneWidth = randInt(15, 20);
+//        int roomOneHeight = randInt(5, 15);
+//        int roomOneLeft = 1;
+//
+//        int borderOne = roomOneLeft + roomOneWidth;
+//
+//        int roomTwoWidth = randInt(15, 20);
+//        int roomTwoHeight = randInt(5, 15);
+//        int roomTwoLeft = borderOne + randInt(1, 3);
+//
+//        int borderTwo = roomOneLeft + roomOneWidth + 3 + roomTwoWidth;
+//
+//        int roomThreeWidth = randInt(15, 20);
+//        int roomThreeHeight = randInt(5, 15);
+//        int roomThreeLeft = borderTwo  + randInt(1, 3);
+//
+//
+//        for (int r = 1; r < roomOneHeight; r++) {
+//            for (int c = roomOneLeft; c < borderOne; c++) {
+//                m_level[r][c] = ' ';
+//            }
+//        }
+//
+//        for (int r = 1; r < roomTwoHeight; r++) {
+//            for (int c = roomTwoLeft; c < borderTwo; c++) {
+//                m_level[r][c] = ' ';
+//            }
+//        }
+//
+//        for (int r = 1; r < roomThreeHeight; r++) {
+//            for (int c = roomThreeLeft; c < 68; c++) {
+//                m_level[r][c] = ' ';
+//            }
+//        }
+//
+//
+//
+//    }
+//
+//    else if (numRooms == 4) {
+//        int roomOneHeight = randInt(5, 7);
+//        int roomOneWidth = randInt(25, 32);
+//
+//        int roomTwoHeight = randInt(5, 7);
+//        int roomTwoWidth = randInt(25, 30);
+//
+//        int roomThreeHeight = randInt(5, 7);
+//        int roomThreeWidth = randInt(25, 30);
+//
+//        int roomFourHeight = randInt(5, 7);
+//        int roomFourWidth = randInt(25, 30);
+//
+//    }
+//
+//    else if (numRooms == 5) {
+//
+//    }
+    
     // TO DO (1) - write algorithm to populate levels with random walls and rooms
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
@@ -26,7 +95,7 @@ Level::Level(Game* game, int curr_level)        // Level Constructor
     for (int i = 0; i < 70; i++) {
         m_level[17][i] = '#';
     }
-    
+
     for (int i = 1; i < 17; i++) {
         m_level[i][0] = '#';
         m_level[i][69] = '#';
@@ -354,40 +423,40 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     if (pathLength > m_game->getGoblinSmellDistance())
         return 10000;
     
-    int pathLengthIfGoLeft = 0;
-    int pathLengthIfGoRight = 0;
-    int pathLengthIfGoUp = 0;
-    int pathLengthIfGoDown = 0;
+    int pathLengthIfGoLeft = 10000;
+    int pathLengthIfGoRight = 10000;
+    int pathLengthIfGoUp = 10000;
+    int pathLengthIfGoDown = 10000;
     
     // recursive call on each direction
     
-    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
-    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
-    pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
-    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+//    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+//    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+//    pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+//    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
     
     // TO DO (1) - optimize recursive algorithm - don't go backwards
     // TO DO (1) - error with this if block is that it never enters the if block and instead always returns 0
-//    if (dirEntered == 'D') {
-//        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
-//        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
-//        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
-//    }
-//    else if (dirEntered == 'U') {
-//        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
-//        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
-//        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
-//    }
-//    else if (dirEntered == 'L') {
-//        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
-//        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
-//        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
-//    }
-//    else if (dirEntered == 'R') {
-//        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
-//        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
-//        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
-//    }
+    if (dirEntered == 'D') {
+        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+    }
+    else if (dirEntered == 'U') {
+        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+    }
+    else if (dirEntered == 'L') {
+        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
+    }
+    else if (dirEntered == 'R') {
+        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
+        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
+    }
     
     // return optimal path direction
     if  (pathLengthIfGoUp <= pathLengthIfGoDown && pathLengthIfGoUp <= pathLengthIfGoLeft && pathLengthIfGoUp <= pathLengthIfGoRight) {
