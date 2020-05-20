@@ -18,7 +18,9 @@ Dungeon::Dungeon(Game* game)    // Dungeon Constructor
 }
 
 Dungeon::~Dungeon()             // Dungeon Destructor
-{}
+{
+    delete level_ptr;
+}
 
 void Dungeon::display()         // calls level's display & keeps track of current level
 {

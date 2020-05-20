@@ -86,9 +86,18 @@ Level::Level(Game* game, int curr_level)        // Level Constructor
 // TO DO - implement Level Destructor
 Level::~Level()                     // Level Destructor
 {
-    // TO DO (1) - delete scrolls and weapons on level
-    // TO DO (1) - delete monsters on level
+    // delete progression object
     delete m_progressionObject;
+    
+    // TO DO (1) - delete scrolls and weapons on level
+    for (int o = 0; o < m_objects.size(); o++) {
+        delete m_objects[o];
+    }
+    
+    // TO DO (1) - delete monsters on level
+    for (int m = 0; m < m_monsters.size(); m++) {
+        delete m_monsters[m];
+    }
 }
 
 void Level::display()
@@ -185,12 +194,12 @@ bool Level::pickUpObject(string& messageToPrint)
                 messageToPrint += "You pick up ";
                 if (m_objects[i]->getSymbol() == ')') {
                     Weapon* weaponPointer = dynamic_cast<Weapon*>(m_objects[i]);
-                    messageToPrint += weaponPointer->getName();
+                    messageToPrint += weaponPointer->getName() + "\n";
                 }
                 else if (m_objects[i]->getSymbol()) {
                     Scroll* scrollPointer = dynamic_cast<Scroll*>(m_objects[i]);
                     messageToPrint += "a scroll called ";
-                    messageToPrint += scrollPointer->getName();
+                    messageToPrint += scrollPointer->getName() + "\n";
                 }
                 m_player->addObjectToInventory(m_objects[i]);         // add object to player's m_inventory
                 m_objects.erase(m_objects.begin() + i);               // erase object from levels m_objects vector (level no longer has access to that object)
@@ -352,12 +361,13 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     
     // recursive call on each direction
     
-    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'L');
-    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'L');
+    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
+    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
     pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
-    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'L');
+    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
     
     // TO DO (1) - optimize recursive algorithm - don't go backwards
+    // TO DO (1) - error with this if block is that it never enters the if block and instead always returns 0
 //    if (dirEntered == 'D') {
 //        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
 //        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
@@ -373,7 +383,6 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
 //        pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
 //        pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
 //    }
-//
 //    else if (dirEntered == 'R') {
 //        pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
 //        pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');

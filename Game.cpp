@@ -29,6 +29,8 @@ Game::~Game()
 {
     // TO DO (1) - delete dungeon (dungeon should delete level - level should delete monsters and weapons/scrolls on it)
     // TO DO (1) - delete player (player should delete weapons/scrolls in its inventory)
+    delete m_dungeon;
+    delete m_player;
 }
 
 Player* Game::player()
@@ -113,6 +115,7 @@ void Game::play()
             m_player->decreaseSleep();
         
         // TO DO (1) - update m_level with row and position of player and erase old row and position of player after player's turn so monsters can move correctly
+        // TO DO (1) - sometimes the monsters overlap when they move, but why?
         
         // TO DO (1) - loop through and if any monsters are dead print out applicable message
         // TO DO (1) - should clearDeadMonsters() come before moveMonsters() since the player can kill a monster?

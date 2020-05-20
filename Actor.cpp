@@ -37,8 +37,10 @@ Actor::Actor(int row, int col, int hitpoints, string name, int armorpoints, int 
     m_initialObject = object; 
 }
 
-Actor::~Actor()      // Actor Destructor
-{}
+Actor::~Actor()      // Actor Destructor - only for monsters to delete their weapon. Players have their own destructors that delete player's inventory
+{
+    delete m_initialObject;
+}
 
 void Actor::move(char direction)
 {
@@ -125,12 +127,55 @@ void Actor::attack(Actor *attacker, Actor *defender, bool& message, string& mess
     // TO DO (1) - when monster can attack player, the message does not print out when the player attacks the monster back
     
     Weapon* attackerWeapon = dynamic_cast<Weapon*>(attacker->getInteractableObject());
+    MagicFangsOfSleep* sleepWeapon = dynamic_cast<MagicFangsOfSleep*>(attacker->getInteractableObject());
     
     // calculate attacker and defender points
     int attackerPoints = attacker->getDexterity() + attackerWeapon->getWeaponDexterity();
     int defenderPoints = defender->getDexterity() + defender->getArmor();
     
     // update health and message to print depending on if there was an attack or not
+    
+    // if weapon is magic fangs of sleep
+    if (sleepWeapon != nullptr) {
+        if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
+            int damagePointsSleep = randInt(0, attacker->getStrength() + attackerWeapon->getWeaponDamage() -1);
+            defender->m_hitpoints = defender->m_hitpoints - damagePointsSleep;
+            message = true;
+            messageToPrint += attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName();
+            
+            if (defender->m_hitpoints <= 0) {
+                messageToPrint += " dealing a final blow\n";
+                return;
+            }
+            
+            bool putToSleep = trueWithProbability(0.20);
+            if (putToSleep == true) {
+                message = true;
+                messageToPrint += " and hits, putting " + defender->getName() + " to sleep.\n";
+                int sleepTime = randInt(2, 6);
+                if (defender->m_sleeptime > 0) {
+                    if (defender->m_sleeptime >= sleepTime)
+                        defender->m_sleeptime = defender->m_sleeptime;
+                    else if (defender->m_sleeptime < sleepTime)
+                        defender->m_sleeptime = sleepTime;
+                }
+                else if (defender->m_sleeptime == 0) {
+                    defender->m_sleeptime = sleepTime;
+                }
+            }
+            else if (putToSleep == false) {
+                messageToPrint += " and hits.\n";
+            }
+            return;
+        }
+        else {
+            message = true;
+            messageToPrint += attacker->getName() + " " + attackerWeapon->getWeaponAction() + " " + attackerWeapon->getName() + " at the " + defender->getName() + " and misses.\n";
+            return;
+        }
+    }
+
+    // if weapons is not magic fangs of sleep
     if (randInt(1, attackerPoints) >= randInt(1, defenderPoints)) {
         int damagePoints = randInt(0, attacker->getStrength() + attackerWeapon->getWeaponDamage() - 1);
         defender->m_hitpoints = defender->m_hitpoints - damagePoints;
@@ -195,18 +240,24 @@ InteractableObject* Actor::getInteractableObject()
 Monster::Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object)
 : Actor(row, col, randInt(5, 10), name, 2, randInt(2, 3), randInt(2, 3), 0, game, c, object)
 {}
-Monster::~Monster()
-{}
+//Monster::~Monster()
+//{}
 
 // TO DO (1) - ensure that monsters do not attack each other in each monster's takeTurn() function
 
 Goblin::Goblin(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(15, 20), "Goblin", 1, 3, 1, 0, game, 'G', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
 {}
-Goblin::~Goblin()
-{}
+//Goblin::~Goblin()
+//{}
 void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // if goblin is asleep
+    if (attacker->getSleepTime() > 0) {
+        attacker->decreaseSleep();
+        return;
+    }
+    
     // defender is always the player when goblin attacks
     Actor* defender = game()->player();
     
@@ -277,11 +328,17 @@ void Goblin::takeTurn(char userInput, Actor* attacker, bool& message, string& me
 SnakeWomen::SnakeWomen(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(3, 6), "Snake Women", 3, 2, 3, 0, game, 'S', new MagicFangsOfSleep(0, 0, ')', game, "magic fangs of sleep", "strikes", 3, 2))
 {}
-SnakeWomen::~SnakeWomen()
-{}
+//SnakeWomen::~SnakeWomen()
+//{}
 void SnakeWomen::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
-    // defender is always the player when bogeymen attack
+    // if snakewomen is asleep
+    if (attacker->getSleepTime() > 0) {
+        attacker->decreaseSleep();
+        return;
+    }
+    
+    // defender is always the player when snakewomen attack
     Actor* defender = game()->player();
     
     // if player is next to the snakewoemn, attack player
@@ -335,10 +392,16 @@ void SnakeWomen::takeTurn(char userInput, Actor* attacker, bool& message, string
 BogeyMen::BogeyMen(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(5, 10), "Bogey Men", 2, randInt(2, 3), randInt(2, 3), 0, game, 'B', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
 {}
-BogeyMen::~BogeyMen()
-{}
+//BogeyMen::~BogeyMen()
+//{}
 void BogeyMen::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // if bogeymen is asleep
+    if (attacker->getSleepTime() > 0) {
+        attacker->decreaseSleep();
+        return;
+    }
+    
     // defender is always the player when bogeymen attack
     Actor* defender = game()->player();
     
@@ -394,10 +457,18 @@ void BogeyMen::takeTurn(char userInput, Actor* attacker, bool& message, string& 
 Dragon::Dragon(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(20, 25), "Dragon", 4, 4, 4, 0, game, 'D', new LongSword(0, 0, ')', game, "long sword", "swings", 2, 4))
 {}
-Dragon::~Dragon()
-{}
+//Dragon::~Dragon()
+//{}
 void Dragon::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    attacker->heal();
+    
+    // if dragon is asleep
+    if (attacker->getSleepTime() > 0) {
+        attacker->decreaseSleep();
+        return;
+    }
+    
     // defender is always the player when bogeymen attack
     Actor* defender = game()->player();
     
@@ -438,6 +509,10 @@ Player::Player(Game* game, int initialRow, int initialCol)
 Player::~Player()
 {
     // TO DO (1) - delete objects in player's inventory
+    // starts at index 1 because actor's destructor will delete initial weapon
+    for (int inv = 1; inv < m_inventory.size(); inv++) {
+        delete m_inventory[inv];
+    }
 }
 
 int Player::getInventorySize()

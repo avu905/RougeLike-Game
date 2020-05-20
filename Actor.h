@@ -91,7 +91,7 @@ class Monster : public Actor
 {
 public:
     Monster(int row, int col, int hitpoints, string name, int armorpoints, int strpoints, int dexpoints, int sleeptime, Game* game, char c, InteractableObject* object);
-    virtual ~Monster();
+    // virtual ~Monster();
     virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint) = 0;
 private:
 };
@@ -100,7 +100,7 @@ class Goblin : public Monster
 {
 public:
     Goblin(Game* game, int initialRow, int initialCol);
-    ~Goblin();
+    // ~Goblin();
     virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
@@ -109,7 +109,7 @@ class SnakeWomen : public Monster
 {
 public:
     SnakeWomen(Game* game, int initialRow, int initialCol);
-    ~SnakeWomen();
+    // ~SnakeWomen();
     virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
@@ -118,7 +118,7 @@ class BogeyMen : public Monster
 {
 public:
     BogeyMen(Game* game, int initialRow, int initialCol);
-    ~BogeyMen();
+    // ~BogeyMen();
     virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
@@ -127,7 +127,7 @@ class Dragon : public Monster
 {
 public:
     Dragon(Game* game, int initialRow, int initialCol);
-    ~Dragon();
+    // ~Dragon();
     virtual void takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint);
 private:
 };
@@ -140,7 +140,7 @@ class Player : public Actor
 {
 public:
     Player(Game* game, int initialRow, int initialCol);
-    ~Player();
+    virtual ~Player();
     void addObjectToInventory(InteractableObject* objectToAdd);
     void displayInventory();
     bool wieldWeapon(string& MessageToPrint);
