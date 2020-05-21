@@ -32,6 +32,8 @@ void Dungeon::newLevel()
     curr_level++;
     delete level_ptr;
     level_ptr = new Level(m_game, curr_level);
+    // TO DO (1) - when make a new level, need to ensure player is placed on a valid position in the new level
+    m_game->player()->changePlayerPosition();
 }
 
 Level* Dungeon::level()

@@ -202,6 +202,11 @@ void Actor::heal()
     }
 }
 
+void Actor::changePlayerPosition()
+{
+    game()->dungeon()->level()->freePosition(m_row, m_col);
+}
+
 // accessors
 Game* Actor::game()
     {return m_game;}

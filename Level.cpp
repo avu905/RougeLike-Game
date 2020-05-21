@@ -14,74 +14,39 @@
 Level::Level(Game* game, int curr_level)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
-//    // generate level completely with walls
+    // TO DO (1) - making rooms
 //    for (int i = 0; i < 18; i++) {
 //        for (int j = 0; j < 70; j++) {
 //            m_level[i][j] = '#';
 //        }
 //    }
 //
-//    int numRooms = 3;
-//    //int numRooms = randInt(3, 5);
-//
-//    if (numRooms == 3) {
-//        int roomOneWidth = randInt(15, 20);
-//        int roomOneHeight = randInt(5, 15);
-//        int roomOneLeft = 1;
-//
-//        int borderOne = roomOneLeft + roomOneWidth;
-//
-//        int roomTwoWidth = randInt(15, 20);
-//        int roomTwoHeight = randInt(5, 15);
-//        int roomTwoLeft = borderOne + randInt(1, 3);
-//
-//        int borderTwo = roomOneLeft + roomOneWidth + 3 + roomTwoWidth;
-//
-//        int roomThreeWidth = randInt(15, 20);
-//        int roomThreeHeight = randInt(5, 15);
-//        int roomThreeLeft = borderTwo  + randInt(1, 3);
-//
-//
-//        for (int r = 1; r < roomOneHeight; r++) {
-//            for (int c = roomOneLeft; c < borderOne; c++) {
-//                m_level[r][c] = ' ';
-//            }
+//    // int numRooms = randInt(4, 7);
+//    int numRooms = 2;
+//    // make first room
+//    int roomsMade = 1;
+//    int cornerRow = randInt(1, 17);
+//    int cornerCol = randInt(1, 68);
+//    int roomWidth = randInt(10, 15);
+//    int roomHeight = randInt(5, 8);
+//    while (cornerRow + roomHeight >= 17) {
+//        cornerRow = randInt(1, 17);
+//        roomWidth = randInt(10, 15);
+//    }
+//    while (cornerCol + roomWidth >= 69) {
+//        cornerCol = randInt(1, 68);
+//        roomHeight = randInt(5, 8);
+//    }
+//    for (int i = cornerRow; i < cornerRow + roomHeight; i++) {
+//        for (int j = cornerCol; j < cornerCol + roomWidth; j++) {
+//            m_level[i][j] = ' ';
 //        }
-//
-//        for (int r = 1; r < roomTwoHeight; r++) {
-//            for (int c = roomTwoLeft; c < borderTwo; c++) {
-//                m_level[r][c] = ' ';
-//            }
-//        }
-//
-//        for (int r = 1; r < roomThreeHeight; r++) {
-//            for (int c = roomThreeLeft; c < 68; c++) {
-//                m_level[r][c] = ' ';
-//            }
-//        }
-//
-//
-//
 //    }
 //
-//    else if (numRooms == 4) {
-//        int roomOneHeight = randInt(5, 7);
-//        int roomOneWidth = randInt(25, 32);
-//
-//        int roomTwoHeight = randInt(5, 7);
-//        int roomTwoWidth = randInt(25, 30);
-//
-//        int roomThreeHeight = randInt(5, 7);
-//        int roomThreeWidth = randInt(25, 30);
-//
-//        int roomFourHeight = randInt(5, 7);
-//        int roomFourWidth = randInt(25, 30);
-//
+//    while (roomsMade != numRooms) {
+//        roomsMade++;
 //    }
-//
-//    else if (numRooms == 5) {
-//
-//    }
+    
     
     // TO DO (1) - write algorithm to populate levels with random walls and rooms
     for (int i = 0; i < 18; i++) {
@@ -214,13 +179,25 @@ void Level::display()
 
 bool Level::validMove(int row, int col)
 {
-    // TO DO (1) - actors cannot move onto other actors
+    
+    if (row == m_game->player()->getRowNum() && col == m_game->player()->getColNum())
+        return false;
+    
+    for (int i = 0; i < m_monsters.size(); i++) {
+        if (row == m_monsters[i]->getRowNum() && col == m_monsters[i]->getColNum())
+            return false;
+    }
+    
+    if (m_level[row][col] == '#')
+        return false;
+    
+    return true;
     
     // actor can move onto blank space or object
-    if (m_level[row][col] == ' ' || m_level[row][col] == '>' || m_level[row][col] == '&' || m_level[row][col] == ')' || m_level[row][col] == '?')
-        return true;
-    
-    return false;
+//    if (m_level[row][col] == ' ' || m_level[row][col] == '>' || m_level[row][col] == '&' || m_level[row][col] == ')' || m_level[row][col] == '?')
+//        return true;
+//
+//    return false;
 }
 
 Player* Level::createPlayer()
@@ -423,6 +400,20 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     if (pathLength > m_game->getGoblinSmellDistance())
         return 10000;
     
+    // TO DO (1) - make sure this base case is correct - base case (4) - if shortest possible path is more than 15, immediately return
+//    int totalLength = 0;
+//    if (startRow > endRow)
+//        totalLength += startRow - endRow;
+//    else if (startRow < endRow)
+//        totalLength += endRow - startRow;
+//    if (startCol > endCol)
+//        totalLength += startCol - endCol;
+//    else if (startCol < endCol)
+//        totalLength += endCol = startCol;
+//    if (totalLength > m_game->getGoblinSmellDistance())
+//        return 10000;
+    
+    
     int pathLengthIfGoLeft = 10000;
     int pathLengthIfGoRight = 10000;
     int pathLengthIfGoUp = 10000;
@@ -436,7 +427,6 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
 //    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
     
     // TO DO (1) - optimize recursive algorithm - don't go backwards
-    // TO DO (1) - error with this if block is that it never enters the if block and instead always returns 0
     if (dirEntered == 'D') {
         pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
         pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');

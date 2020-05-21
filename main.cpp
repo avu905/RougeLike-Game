@@ -23,7 +23,7 @@ int main()
       // improve your algorithm, pass a value smaller than 15 to the game
       // constructor so your game is comfortable to play.
 
-    Game g(10);
+    Game g(7);
     g.play();
 }
 
