@@ -208,7 +208,7 @@ bool Level::pickUpObject(string& messageToPrint)
         return true;
     }
     else {                                                            // full inventory - can't pick up object
-        messageToPrint += "Your knapsack is full; you can't pick that up.";
+        messageToPrint += "Your knapsack is full; you can't pick that up.\n";
         return true;    // TO DO (1) - should I return true here ?????
     }
     
@@ -374,7 +374,7 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     int pathLengthIfGoUp = 10000;
     int pathLengthIfGoDown = 10000;
     
-    // recursive call on each direction - 
+    // recursive call on each direction
     if (dirEntered == 'D') {
         pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
         pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
