@@ -120,6 +120,7 @@ void Game::play()
     while (m_player->getHitPoints() > 0);
     
     m_dungeon->level()->display();
+    cout << messageToPrint;
     cout << "Press q to exit game." << endl;
     char quitDead;
     while ((quitDead = getCharacter()) != 'q')
