@@ -115,7 +115,6 @@ public:
     MagicFangsOfSleep(int row, int col, char symbol, Game* game, string name, string action, int dexterityBonus, int damageAmount);
     ~MagicFangsOfSleep();
 private:
-    // TO DO (1) - should fangs to sleep have it's own private data member m_sleep
 };
 // =======================================================
 // ========== SCROLL DECLARATION =========================

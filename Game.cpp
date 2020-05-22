@@ -54,11 +54,8 @@ void Game::play()
     bool computerMessage = false;   // this bool lets us know if the monsters did an action that needs to be printed to the screen
     
     do {
-        // TO DO (1) - newlines print out correctly and that there is not a newline before the grid is displayed
-        // TO DO (1) - should clear screen be at the very bottom of the do while instead of the first thing?
         clearScreen();
         
-        // TO DO (1) - should display be the very first thing b/c we need to display how everything look so the user knows where the player and mosnters are
         // display the dungeon
         m_dungeon->level()->display();
         
@@ -84,7 +81,6 @@ void Game::play()
             if (userInput == 'q')                                                               // quit Game
                 return;
             if (userInput == 'h' || userInput == 'j' || userInput == 'k' || userInput == 'l') { // player moves or attacks
-                // TO DO (1) - there is an extra new line between where message prints out and you enter in the userInput
                 m_player->takeTurn(userInput, m_player, playerMessage, messageToPrint);
             }
             if (userInput == '>') {                                                             // take staircase
@@ -112,35 +108,16 @@ void Game::play()
         if (m_player->getSleepTime() != 0)
             m_player->decreaseSleep();
         
-        // TO DO (1) - update m_level with row and position of player and erase old row and position of player after player's turn so monsters can move correctly
-        // TO DO (1) - sometimes the monsters overlap when they move, but why?
-        
-        // TO DO (1) - loop through and if any monsters are dead print out applicable message
-        // TO DO (1) - should clearDeadMonsters() come before moveMonsters() since the player can kill a monster?
         // clear all dead monsters before monsters make their move since the player could've killed a monster during the player's turn
         m_dungeon->level()->clearDeadMonsters();
         
-        // TO DO (1) - if after player's turn the player kills a monster, ensure that the monster is removed immediately and that moveMonsters() does not move a dead monster
-        // TO DO (1) - is userInput for moveMonsters() useless here?
-        // TO DO (1) - ensure computer message is printed correctly
         // MONSTERS' TURN
         m_dungeon->level()->moveMonsters(userInput, computerMessage, messageToPrint);
-        
-        // TO DO (1) - if player is dead print out applicable message and delete everything - THIS MUST COME BEFORE B/C WILL HAVE TO IMMEDIATELY END GAME IF PLAYER DIES
 
         // heal player after each user input
         m_player->heal();
-        
-        // TO DO (1) - heal dragons that have not been killed before each turn the dragon takes
-        // TO DO (1) - possible idea is the level will have a function to heal dragons ==> m_dungeon->level()->healDragons();
-        
-        
     }
     while (m_player->getHitPoints() > 0);
-    
-    
-    // TO DO (1) - when player dies print out appropriate message
-    // TO DO (1) - when player dies, need to print out "monster strikes weapon at player, DEALING FINAL BLOW"
     
     m_dungeon->level()->display();
     cout << "Press q to exit game." << endl;

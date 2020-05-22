@@ -209,10 +209,9 @@ bool Level::pickUpObject(string& messageToPrint)
     }
     else {                                                            // full inventory - can't pick up object
         messageToPrint += "Your knapsack is full; you can't pick that up.\n";
-        return true;    // TO DO (1) - should I return true here ?????
+        return true;
     }
     
-    // TO DO (1) - should I return false here or should I return true
     return false;
 }
 
@@ -265,7 +264,6 @@ void Level::clearDeadMonsters()
 {
     for (int i = 0; i < m_monsters.size(); i++) {
         if (m_monsters[i]->getHitPoints() <= 0) {
-            // TO DO (1) - monsters should drop an item if they die by calling drop item function
             monsterDropItem(m_monsters[i]);
             delete m_monsters[i];
             m_monsters.erase(m_monsters.begin() + i);
@@ -290,7 +288,6 @@ void Level::monsterDropItem(Monster* monster)
         if (chanceOfDropping == true)
             m_objects.push_back(new MagicFangsOfSleep(monster->getRowNum(), monster->getColNum(), ')', m_game, "magic fangs of sleep", "strikes", 3, 2));
     }
-    // TO DO (1) - sometimes dragon will drop a weapon ?????
     else if (monster->getChar() == 'D') {
         if (isObjectAtSpot(monster) == true)
             return;
@@ -355,7 +352,7 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     if (pathLength > m_game->getGoblinSmellDistance())
         return 10000;
     
-    // TO DO (1) - make sure this base case is correct - base case (4) - if shortest possible path is more than 15, immediately return
+    // base case (4) - if shortest possible path is more than 15, immediately return
     int totalLength = 0;
     if (startRow > endRow)
         totalLength += startRow - endRow;

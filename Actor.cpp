@@ -354,7 +354,6 @@ void SnakeWomen::takeTurn(char userInput, Actor* attacker, bool& message, string
         return;
     }
     
-    // TO DO (1) - if snakewomen is within 3 steps then move closer to player
     if (defender->getRowNum() >= attacker->getRowNum() - 3 && defender->getRowNum() <= attacker->getRowNum() + 3 && defender->getColNum() >= attacker->getColNum() - 3 && defender->getColNum() <= attacker->getColNum() + 3) {
 
         int initialBogeyMenRow = attacker->getRowNum();
@@ -418,7 +417,6 @@ void BogeyMen::takeTurn(char userInput, Actor* attacker, bool& message, string& 
         return;
     }
     
-    // TO DO (1) - if bogeymen is within 5 steps then move closer to player
     if (defender->getRowNum() >= attacker->getRowNum() - 5 && defender->getRowNum() <= attacker->getRowNum() + 5 && defender->getColNum() >= attacker->getColNum() - 5 && defender->getColNum() <= attacker->getColNum() + 5) {
 
         int initialBogeyMenRow = attacker->getRowNum();
@@ -468,7 +466,6 @@ void Dragon::takeTurn(char userInput, Actor* attacker, bool& message, string& me
     // defender is always the player when dragon attacks
     Actor* defender = game()->player();
     
-    // TO DO (1) - after dragon does attack, should it return immediately ????? same question for bogeymen, snakewomen, goblin
     // if player is next to the dragon, attack player
     if (attacker->getRowNum() == defender->getRowNum() && attacker->getColNum() - 1 == defender->getColNum()) {       // bogey men attack to left
         attacker->attack(attacker, defender, message, messageToPrint);
@@ -659,8 +656,6 @@ void Player::takeTurn(char userInput, Actor* attacker, bool& message, string& me
     
     if (userInput == 'h') {                 // move or attack left
         if (isMonsterAtPosition(attacker, defender, attacker->getRowNum(), attacker->getColNum() - 1) == true) {
-            // TO DO (1) - if statement and call attack if defender is not a nullptr
-            // TO DO (1) - modify names of the monsters to "snake woman" and "bogey man" and other things so prints out "at player" and "at THE monster"
             attacker->attack(attacker, defender, message, messageToPrint);
         }
         else
