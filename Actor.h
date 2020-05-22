@@ -63,7 +63,7 @@ public:
     virtual char getChar();
     virtual int getSleepTime();
     virtual string getName();
-    virtual InteractableObject* getInteractableObject();            // technically gets the weapon that the actor is holding
+    virtual InteractableObject* getInteractableObject();            // gets the weapon that the actor is holding
     
 private:
     int m_row;          // current row position in level

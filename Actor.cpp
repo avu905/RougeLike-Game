@@ -44,7 +44,6 @@ Actor::~Actor()      // Actor Destructor - only for monsters to delete their wea
 
 void Actor::move(char direction)
 {
-    // TO DO (1) - recombine the nested if statements into 1 if statement again with &&
     if (direction == 'h') {
         if (this->game()->dungeon()->level()->validMove(m_row, m_col-1) == true) {              // move left
             m_col = m_col - 1;
@@ -100,7 +99,6 @@ void Actor::newPlayerPositionByTeleportationScroll(int newRow, int newCol)
     m_col = newCol;
 }
 
-// TO DO (1) - implement playerCheat() correctly. should it set hitpoints and maxHitpoints to 50?
 void Actor::playerCheat()
 {
     m_strpoints = 9;
@@ -121,11 +119,6 @@ bool Actor::isMonsterAtPosition(Actor* attacker, Actor*& defender, int row, int 
 
 void Actor::attack(Actor *attacker, Actor *defender, bool& message, string& messageToPrint)
 {
-    // TO DO (1) - account for sleep if attacker is attacking with magic fangs of sleep - magic fangs of sleep must increase sleep time of defender
-    // TO DO (1) - if defender is already asleep make sure to update sleep time correctly
-    // TO DO (1) - update messageToPrint string too if defender is put to sleep
-    // TO DO (1) - when monster can attack player, the message does not print out when the player attacks the monster back
-    
     Weapon* attackerWeapon = dynamic_cast<Weapon*>(attacker->getInteractableObject());
     MagicFangsOfSleep* sleepWeapon = dynamic_cast<MagicFangsOfSleep*>(attacker->getInteractableObject());
     
@@ -194,7 +187,6 @@ void Actor::attack(Actor *attacker, Actor *defender, bool& message, string& mess
 
 void Actor::heal()
 {
-    // TO DO (1) - as of now, the heal() function only works for players, ensure that it works for dragons as well
     bool actorWillHeal = trueWithProbability(0.10);
     if (actorWillHeal == true) {
         if (this->m_hitpoints < this->m_maxHitpoints)
@@ -247,8 +239,6 @@ Monster::Monster(int row, int col, int hitpoints, string name, int armorpoints, 
 {}
 //Monster::~Monster()
 //{}
-
-// TO DO (1) - ensure that monsters do not attack each other in each monster's takeTurn() function
 
 Goblin::Goblin(Game* game, int initialRow, int initialCol)
 : Monster(initialRow, initialCol, randInt(15, 20), "Goblin", 1, 3, 1, 0, game, 'G', new Shortsword(0, 0, ')', game, "short sword", "slashes", 0, 2))
@@ -466,6 +456,7 @@ Dragon::Dragon(Game* game, int initialRow, int initialCol)
 //{}
 void Dragon::takeTurn(char userInput, Actor* attacker, bool& message, string& messageToPrint)
 {
+    // heal dragon
     attacker->heal();
     
     // if dragon is asleep
@@ -474,7 +465,7 @@ void Dragon::takeTurn(char userInput, Actor* attacker, bool& message, string& me
         return;
     }
     
-    // defender is always the player when bogeymen attack
+    // defender is always the player when dragon attacks
     Actor* defender = game()->player();
     
     // TO DO (1) - after dragon does attack, should it return immediately ????? same question for bogeymen, snakewomen, goblin
@@ -513,10 +504,10 @@ Player::Player(Game* game, int initialRow, int initialCol)
 
 Player::~Player()
 {
-    // TO DO (1) - delete objects in player's inventory
-    // starts at index 1 because actor's destructor will delete initial weapon
-    for (int inv = 1; inv < m_inventory.size(); inv++) {
-        delete m_inventory[inv];
+    // delete player's inventory
+    for (int inv = 0; inv < m_inventory.size(); inv++) {
+        if (m_inventory[inv] != getInteractableObject())
+            delete m_inventory[inv];
     }
 }
 
@@ -646,7 +637,6 @@ bool Player::readScroll(string &MessageToPrint)
                 MessageToPrint += "You feel like less of a klutz.\n";
             }
         }
-        // TO DO (1) - make sure reading a teleportation scroll works correctly - seems to be working correctly
         else if (validScroll->getScrollType() == 'T') {
             int newRowPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value
             int newColPosition = 0;     // doesn't matter what this int's initial value is b/c freePosition() function reassgns its value

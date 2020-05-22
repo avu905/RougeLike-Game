@@ -141,6 +141,7 @@ ScrollOfEnhanceDexterity::~ScrollOfEnhanceDexterity()
 // =======================================================
 // ========== PROGRESSION OBJECT IMPLEMENTATION ==========
 // =======================================================
+// progression objects are the staircase or golden idol - only one or the other are made for each level
 ProgressionObject::ProgressionObject(int row, int col, char symbol, Game* game)
 : InteractableObject(row, col, symbol, game)
 {}

@@ -44,8 +44,8 @@ public:
     void monsterDropItem(Monster* monster);                // monster will drop an item - only called clearDearmonsters() after a monster dies
     bool isObjectAtSpot(Monster* monster);                 // checks if there is an object at a certain position
     void moveMonsters(char userInput, bool& message, string& messageToPrint);        // moves all monsters in level after player's turn
-                                                                                     // TO DO (1) - does moveMonsters() need char userInput as parameter?
-    int findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength, char dirEntered);
+    int findPath(char levelCopy[][70], int startRow, int startCol, int endRow, int endCol, int pathLength, char dirEntered);    // recursive goblin function
+    void makeRooms();                                      // make random rooms
     
     
 private:

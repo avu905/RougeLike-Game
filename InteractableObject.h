@@ -133,7 +133,7 @@ private:
     string m_action;
     char m_scrollType;
     int m_enhance;          // m_enhance is irrelevant for teleportation scroll since I use the freePosition() function instead
-                            // TO DO (1) - just a note: any instantiation of teleportation scroll will have it's m_enhance be set to 0 since it's useless fo teleportation scrolls
+                            // just a note: any instantiation of teleportation scroll will have it's m_enhance be set to 0 since it's useless fo teleportation scrolls
 };
 
 class ScrollOfTeleportation : public Scroll

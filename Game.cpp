@@ -25,10 +25,8 @@ Game::Game(int goblinSmellDistance)                    // Game Constructor
     m_goblinSmellDistance = goblinSmellDistance;
 }
 
-Game::~Game()
+Game::~Game()                                          // Game destructor
 {
-    // TO DO (1) - delete dungeon (dungeon should delete level - level should delete monsters and weapons/scrolls on it)
-    // TO DO (1) - delete player (player should delete weapons/scrolls in its inventory)
     delete m_dungeon;
     delete m_player;
 }

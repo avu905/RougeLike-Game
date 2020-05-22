@@ -14,60 +14,15 @@
 Level::Level(Game* game, int curr_level)        // Level Constructor
 : m_game(game), m_player(m_game->player())
 {
-    // TO DO (1) - making rooms
-//    for (int i = 0; i < 18; i++) {
-//        for (int j = 0; j < 70; j++) {
-//            m_level[i][j] = '#';
-//        }
-//    }
-//
-//    // int numRooms = randInt(4, 7);
-//    int numRooms = 2;
-//    // make first room
-//    int roomsMade = 1;
-//    int cornerRow = randInt(1, 17);
-//    int cornerCol = randInt(1, 68);
-//    int roomWidth = randInt(10, 15);
-//    int roomHeight = randInt(5, 8);
-//    while (cornerRow + roomHeight >= 17) {
-//        cornerRow = randInt(1, 17);
-//        roomWidth = randInt(10, 15);
-//    }
-//    while (cornerCol + roomWidth >= 69) {
-//        cornerCol = randInt(1, 68);
-//        roomHeight = randInt(5, 8);
-//    }
-//    for (int i = cornerRow; i < cornerRow + roomHeight; i++) {
-//        for (int j = cornerCol; j < cornerCol + roomWidth; j++) {
-//            m_level[i][j] = ' ';
-//        }
-//    }
-//
-//    while (roomsMade != numRooms) {
-//        roomsMade++;
-//    }
-    
-    
-    // TO DO (1) - write algorithm to populate levels with random walls and rooms
+    // add walls to m_level
     for (int i = 0; i < 18; i++) {
         for (int j = 0; j < 70; j++) {
-            m_level[i][j] = ' ';
+            m_level[i][j] = '#';
         }
     }
-    for (int i = 0; i < 70; i++) {
-        m_level[0][i] = '#';
-    }
-    for (int i = 0; i < 70; i++) {
-        m_level[17][i] = '#';
-    }
-
-    for (int i = 1; i < 17; i++) {
-        m_level[i][0] = '#';
-        m_level[i][69] = '#';
-    }
-    for (int k = 3; k < 12; k++) {
-        m_level[k][7] = '#';
-    }
+    
+    // call function to make rooms and corridors
+    makeRooms();
     
     // put weapon and scroll objects in level
         // weapons : short sword, mace, long sword ONLY
@@ -117,18 +72,17 @@ Level::Level(Game* game, int curr_level)        // Level Constructor
     initialPlayerCol = randInt(0, 69);
 }
 
-// TO DO - implement Level Destructor
 Level::~Level()                     // Level Destructor
 {
     // delete progression object
     delete m_progressionObject;
     
-    // TO DO (1) - delete scrolls and weapons on level
+    //delete scrolls and weapons on level
     for (int o = 0; o < m_objects.size(); o++) {
         delete m_objects[o];
     }
     
-    // TO DO (1) - delete monsters on level
+    // delete monsters on level
     for (int m = 0; m < m_monsters.size(); m++) {
         delete m_monsters[m];
     }
@@ -137,7 +91,6 @@ Level::~Level()                     // Level Destructor
 void Level::display()
 {
     // populate m_level with only walls and interactable objects (not including staircases and golden idol)
-    // TO DO (1) - is the if statement correct - should it be "if (m_level[row][col] != '#' && m_level[row][col] != '?' && m_level[row][col] != ')')"
     for (int row = 0; row < 18; row++) {
         for (int col = 0; col < 70; col++) {
             if (m_level[row][col] != '#' && m_level[row][col] != '?' && m_level[row][col] != ')')
@@ -179,15 +132,17 @@ void Level::display()
 
 bool Level::validMove(int row, int col)
 {
-    
+    // can't move onto player
     if (row == m_game->player()->getRowNum() && col == m_game->player()->getColNum())
         return false;
     
+    // can't move onto monster
     for (int i = 0; i < m_monsters.size(); i++) {
         if (row == m_monsters[i]->getRowNum() && col == m_monsters[i]->getColNum())
             return false;
     }
     
+    // can't move onto wall
     if (m_level[row][col] == '#')
         return false;
     
@@ -233,7 +188,6 @@ bool Level::pickUpObject(string& messageToPrint)
     }
     
     // pick up an object
-    // TO DO (1) - make sure the if statement should be < 26 and not < 25
     if (m_player->getInventorySize() < 26) {
         for (int i = 0; i < m_objects.size(); i++) {
             if (m_player->getRowNum() == m_objects[i]->getRow() && m_player->getColNum() == m_objects[i]->getCol()) {
@@ -253,7 +207,7 @@ bool Level::pickUpObject(string& messageToPrint)
         }
         return true;
     }
-    else {
+    else {                                                            // full inventory - can't pick up object
         messageToPrint += "Your knapsack is full; you can't pick that up.";
         return true;    // TO DO (1) - should I return true here ?????
     }
@@ -288,9 +242,11 @@ void Level::addInteractableObject(int objectType)
 
 void Level::addMonster(int monsterType)
 {
+    // get free position for monster
     int initialMonsterRow = randInt(0, 17);
     int initialMonsterCol = randInt(0, 69);
     freePosition(initialMonsterRow, initialMonsterCol);
+    // add monster
     if (monsterType == 0) {
         m_monsters.push_back(new Goblin(m_game, initialMonsterRow, initialMonsterCol));
     }
@@ -307,7 +263,6 @@ void Level::addMonster(int monsterType)
 
 void Level::clearDeadMonsters()
 {
-    // TO DO (1) - fix : when player deals final blow to monster, monster doesn't die immediatley. The monster instead can attack the player again and then after the monster is erased
     for (int i = 0; i < m_monsters.size(); i++) {
         if (m_monsters[i]->getHitPoints() <= 0) {
             // TO DO (1) - monsters should drop an item if they die by calling drop item function
@@ -320,6 +275,7 @@ void Level::clearDeadMonsters()
 
 void Level::monsterDropItem(Monster* monster)
 {
+    // drop item depending on monster that died
     if (monster->getChar() == 'B') {
         if (isObjectAtSpot(monster) == true)
             return;
@@ -344,7 +300,6 @@ void Level::monsterDropItem(Monster* monster)
         else if (scrollToDrop == 1)
             m_objects.push_back(new ScrollOfImproveArmor(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of enhance armor", "Your armor glows blue.", 'A', randInt(1, 3)));
         else if (scrollToDrop == 2)
-            // ScrollOfRaiseStrength(int row, int col, char symbol, Game* game, string name, string action, char scrollType, int enhance);
             m_objects.push_back(new ScrollOfRaiseStrength(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of strength", "Your muscles bulge.", 'S', randInt(1, 3)));
         else if (scrollToDrop == 3)
             m_objects.push_back(new ScrollOfEnhanceHealth(monster->getRowNum(), monster->getColNum(), '?', m_game, "scroll of enhance health", "You feel your heart beating stronger.", 'H', randInt(3, 8)));
@@ -375,7 +330,7 @@ bool Level::isObjectAtSpot(Monster* monster)
     if (monster->getRowNum() == m_progressionObject->getRow() && monster->getColNum() == m_progressionObject->getCol())
         return true;
     
-    // there is not object at that position
+    // there is no object at that position
     return false;
 }
 
@@ -401,32 +356,25 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
         return 10000;
     
     // TO DO (1) - make sure this base case is correct - base case (4) - if shortest possible path is more than 15, immediately return
-//    int totalLength = 0;
-//    if (startRow > endRow)
-//        totalLength += startRow - endRow;
-//    else if (startRow < endRow)
-//        totalLength += endRow - startRow;
-//    if (startCol > endCol)
-//        totalLength += startCol - endCol;
-//    else if (startCol < endCol)
-//        totalLength += endCol = startCol;
-//    if (totalLength > m_game->getGoblinSmellDistance())
-//        return 10000;
+    int totalLength = 0;
+    if (startRow > endRow)
+        totalLength += startRow - endRow;
+    else if (startRow < endRow)
+        totalLength += endRow - startRow;
+    if (startCol > endCol)
+        totalLength += startCol - endCol;
+    else if (startCol < endCol)
+        totalLength += endCol - startCol;
+    if (totalLength > m_game->getGoblinSmellDistance())
+        return 10000;
     
-    
+    // function returns 10000 unless an optimal smell distance is found
     int pathLengthIfGoLeft = 10000;
     int pathLengthIfGoRight = 10000;
     int pathLengthIfGoUp = 10000;
     int pathLengthIfGoDown = 10000;
     
-    // recursive call on each direction
-    
-//    pathLengthIfGoUp = findPath(levelCopy, startRow-1, startCol, endRow, endCol, pathLength+1, 'U');
-//    pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
-//    pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
-//    pathLengthIfGoRight = findPath(levelCopy, startRow, startCol+1, endRow, endCol, pathLength+1, 'R');
-    
-    // TO DO (1) - optimize recursive algorithm - don't go backwards
+    // recursive call on each direction - 
     if (dirEntered == 'D') {
         pathLengthIfGoDown = findPath(levelCopy, startRow+1, startCol, endRow, endCol, pathLength+1, 'D');
         pathLengthIfGoLeft = findPath(levelCopy, startRow, startCol-1, endRow, endCol, pathLength+1, 'L');
@@ -460,5 +408,322 @@ int Level::findPath(char levelCopy[][70], int startRow, int startCol, int endRow
     }
     else {
         return pathLengthIfGoRight;
+    }
+}
+
+void Level::makeRooms()
+{
+    // random number of rooms to make
+    int numRooms = randInt(3, 6);
+    int layout = randInt(1, 2);
+    
+    // create 3 rooms
+    if (numRooms == 3) {
+        if (layout == 1) {
+            // make rooms
+            int row1start = randInt(1, 4);
+            int row1end = randInt(13, 16);
+            int col1start = randInt(1, 3);
+            for (int i = row1start; i < row1end; i++) {
+                for (int j = col1start; j < 12; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            int row2start = randInt(1, 5);
+            int row2end = randInt(11, 16);
+            for (int i = row2start; i < row2end; i++) {
+                for (int j = 16; j < 35; j++)
+                    m_level[i][j] = ' ';
+            }
+            int row3start = randInt(1, 6);
+            int row3end = randInt(13, 15);
+            int col3end = randInt(54, 67);
+            for (int i = row3start; i < row3end; i++) {
+                for (int j = 42; j < col3end; j++)
+                    m_level[i][j] = ' ';
+            }
+            // make cooridors
+            int c1 = randInt(6, 9);
+            for (int j = 12; j < 16; j++) {
+                m_level[c1][j] = ' ';
+            }
+            
+            int c2 = randInt(6, 9);
+            for (int j = 35; j < 42; j++) {
+                m_level[c2][j] = ' ';
+            }
+        }
+        else if (layout == 2) {
+            // make rooms
+            int row1start = randInt(2, 5);
+            int row1end = randInt(11, 16);
+            int col1start = randInt(3, 5);
+            for (int i = row1start; i < row1end; i++) {
+                for (int j = col1start; j < 20; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            int row2start = randInt(3, 5);
+            int row2end = randInt(11, 16);
+            for (int i = row2start; i < row2end; i++) {
+                for (int j = 24; j < 45; j++)
+                    m_level[i][j] = ' ';
+            }
+            int row3start = randInt(4, 8);
+            int row3end = randInt(14, 16);
+            int col3end = randInt(62, 67);
+            for (int i = row3start; i < row3end; i++) {
+                for (int j = 52; j < col3end; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            // make corridors
+            int c1 = randInt(6, 10);
+            for (int j = 20; j < 24; j++) {
+                m_level[c1][j] = ' ';
+            }
+            int c2 = randInt(9, 10);
+            for (int j = 45; j < 52; j++) {
+                m_level[c2][j] = ' ';
+            }
+        }
+    }
+    // create 4 rooms
+    else if (numRooms == 4) {
+        if (layout == 1) {
+            // make rooms
+            int row1start = randInt(1, 4);
+            int row1end = randInt(10, 16);
+            int col1start = randInt(1, 3);
+            for (int i = row1start; i < row1end; i++) {
+                for (int j = col1start; j < 10; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            int row2start = randInt(1, 4);
+            int row2end = randInt(10, 16);
+            for (int i = row2start; i < row2end; i++) {
+                for (int j = 12; j < 25; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            int row3start = randInt(1, 4);
+            int row3end = randInt(10, 16);
+            for (int i = row3start; i < row3end; i++) {
+                for (int j = 30; j < 41; j++)
+                    m_level[i][j] = ' ';
+            }
+            int row4start = randInt(1, 4);
+            int row4end = randInt(10, 16);
+            int col4end = randInt(61, 68);
+            for (int i = row4start; i < row4end; i++) {
+                for (int j = 50; j < col4end; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            // make corridors
+            int c1 = randInt(5, 9);
+            for (int j = 10; j < 12; j++) {
+                m_level[c1][j] = ' ';
+            }
+            int c2 = randInt(5, 9);
+            for (int j = 25; j < 30; j++) {
+                m_level[c2][j] = ' ';
+            }
+            int c3 = randInt(5, 9);
+            for (int j = 41; j < 50; j++) {
+                m_level[c3][j] = ' ';
+            }
+        }
+        else if (layout == 2) {
+            int row1start = randInt(1, 4);
+            int row1end = randInt(10, 16);
+            int col1start = randInt(1, 3);
+            for (int i = row1start; i < row1end; i++) {
+                for (int j = col1start; j < 15; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            int row2start = randInt(1, 4);
+            int row2end = randInt(10, 16);
+            for (int i = row2start; i < row2end; i++) {
+                for (int j = 20; j < 32; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            int row3start = randInt(1, 4);
+            int row3end = randInt(10, 16);
+            for (int i = row3start; i < row3end; i++) {
+                for (int j = 36; j < 43; j++)
+                    m_level[i][j] = ' ';
+            }
+            int row4start = randInt(1, 4);
+            int row4end = randInt(10, 16);
+            int col4end = randInt(63, 68);
+            for (int i = row4start; i < row4end; i++) {
+                for (int j = 57; j < col4end; j++) {
+                    m_level[i][j] = ' ';
+                }
+            }
+            // make corridors
+            int c1 = randInt(5, 9);
+            for (int j = 15; j < 20; j++) {
+                m_level[c1][j] = ' ';
+            }
+            int c2 = randInt(5, 9);
+            for (int j = 32; j < 36; j++) {
+                m_level[c2][j] = ' ';
+            }
+            int c3 = randInt(5, 9);
+            for (int j = 43; j < 57; j++) {
+                m_level[c3][j] = ' ';
+            }
+        }
+    }
+    // create 5 rooms
+    else if (numRooms == 5) {
+        // make rooms
+        int row1start = 13;
+        int row1end = randInt(15, 16);
+        int col1start = randInt(1, 3);
+        int col1end = randInt(8, 27);
+        for (int i = row1start; i < row1end; i++) {
+            for (int j = col1start; j < col1end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row2start = randInt(1, 3);
+        int row2end = 8;
+        int col2start = randInt(1, 3);
+        int col2end = 12;
+        for (int i = row2start; i < row2end; i++) {
+            for (int j = col2start; j < col2end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row3start = randInt(1, 3);
+        int row3end = randInt(8, 11);
+        int col3start = 16;
+        int col3end = 23;
+        for (int i = row3start; i < row3end; i++) {
+            for (int j = col3start; j < col3end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row4start = randInt(1, 3);
+        int row4end = randInt(7, 16);
+        int col4start = 29;
+        int col4end = 40;
+        for (int i = row4start; i < row4end; i++) {
+            for (int j = col4start; j < col4end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row5start = randInt(1, 5);
+        int row5end = randInt(11, 16);
+        int col5start  = 48;
+        int col5end = randInt(55, 68);
+        for (int i = row5start; i < row5end; i++) {
+            for (int j = col5start; j < col5end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        // make corridors
+        int c1 = randInt(4, 7);
+        for (int i = 8; i < 13; i++) {
+            m_level[i][c1] = ' ';
+        }
+        int c2 = randInt(4, 7);
+        for (int j = 12; j < 16; j++) {
+            m_level[c2][j] = ' ';
+        }
+        int c3 = randInt(4, 6);
+        for (int j = 23; j < 29; j++) {
+            m_level[c3][j] = ' ';
+        }
+        int c4 = randInt(5, 6);
+        for (int j = 40; j < 48; j++) {
+            m_level[c4][j] = ' ';
+        }
+    }
+    // create 6 rooms
+    else if (numRooms == 6) {
+        // make rooms
+        int row1start = randInt(1, 3);
+        int row1end = 8;
+        int col1start = randInt(1, 3);
+        int col1end = 12;
+        for (int i = row1start; i < row1end; i++) {
+            for (int j = col1start; j < col1end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row2start = randInt(1, 3);
+        int row2end = 10;
+        int col2start = 15;
+        int col2end = 23;
+        for (int i = row2start; i < row2end; i++) {
+            for (int j = col2start; j < col2end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row3start = randInt(1, 3);
+        int row3end = 9;
+        int col3start = 29;
+        int col3end = randInt(35, 66);
+        for (int i = row3start; i < row3end; i++) {
+            for (int j = col3start; j < col3end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        
+        int row4start = 11;
+        int row4end = randInt(15, 16);
+        int col4start = randInt(1, 3);
+        int col4end = 10;
+        for (int i = row4start; i < row4end; i++) {
+            for (int j = col4start; j < col4end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row5start = 12;
+        int row5end = randInt(15, 16);
+        int col5start = 17;
+        int col5end = 25;
+        for (int i = row5start; i < row5end; i++) {
+            for (int j = col5start; j < col5end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        int row6start = 12;
+        int row6end = randInt(15, 16);
+        int col6start = 31;
+        int col6end = randInt(38, 60);
+        for (int i = row6start; i < row6end; i++) {
+            for (int j = col6start; j < col6end; j++) {
+                m_level[i][j] = ' ';
+            }
+        }
+        // make corridors
+        int c1 = randInt(4, 8);
+        for (int i = 8; i < 11; i++) {
+            m_level[i][c1] = ' ';
+        }
+        int c2 = randInt(4, 6);
+        for (int j = 12; j < 15; j++) {
+            m_level[c2][j] = ' ';
+        }
+        int c3 = randInt(4, 7);
+        for (int j = 23; j < 29; j++) {
+            m_level[c3][j] = ' ';
+        }
+        int c4 = randInt(32, 33);
+        for (int i = 9; i < 12; i++) {
+            m_level[i][c4] = ' ';
+        }
+        int c5 = randInt(12, 14);
+        for (int j = 25; j < 31; j++) {
+            m_level[c5][j] = ' ';
+        }
     }
 }
